@@ -1,0 +1,33 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="JavadocDeclaration" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ADDITIONAL_TAGS" value="February" />
+    </inspection_tool>
+    <inspection_tool class="SecurityRoles" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="VulnerableLibrariesLocal" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="isIgnoringEnabled" value="true" />
+      <option name="ignoredModules">
+        <list>
+          <option value="eCard" />
+          <option value="eCard" />
+          <option value="eCard" />
+        </list>
+      </option>
+      <option name="ignoredPackages">
+        <list>
+          <option value="org.xmlunit:xmlunit-core:2.9.1" />
+          <option value="com.google.guava:guava:20.0" />
+          <option value="io.springfox:springfox-swagger-ui:2.9.2" />
+        </list>
+      </option>
+      <option name="ignoredReasons">
+        <list>
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
