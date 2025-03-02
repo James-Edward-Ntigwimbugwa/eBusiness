@@ -9,18 +9,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import tz.business.eCard.userDetailService.UserDetailsImpl;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
-
 @Component
 public class JWTutils {
     @Value("${drppt.co.tz.jwtkey}")
     private String jwtKey;
 
     Logger log = LoggerFactory.getLogger(JWTutils.class);
-
     public String generateJwtToken(Authentication authentication) {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
@@ -28,12 +26,19 @@ public class JWTutils {
                 .claim("roles", new ArrayList<>())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(1)))
-                .signWith(Keys.hmacShaKeyFor(jwtKey.getBytes()), SignatureAlgorithm.HS256)
-                .compact();
+                .signWith(
+                        Keys.hmacShaKeyFor(Base64.getDecoder().decode(jwtKey)), // Decode Base64
+                        SignatureAlgorithm.HS256
+                ).compact();
     }
 
     public  String getUsernameFromJwtToken(String token) {
-        String username = Jwts.parser().setSigningKey(jwtKey).parseClaimsJws(token).getBody().getSubject();
+
+        String username = Jwts.parser()
+                .setSigningKey(Base64.getDecoder().decode(jwtKey)) // Decode Base64
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
         log.debug("username: {}", username);
         return username;
     }
@@ -47,8 +52,9 @@ public class JWTutils {
 
     public boolean validateJwtToken(String authToken) {
         try {
-            Jwts.parser().setSigningKey(jwtKey).parseClaimsJws(authToken);
-            return true;
+            Jwts.parser()
+                    .setSigningKey(Base64.getDecoder().decode(jwtKey)) // Decode Base64
+                    .parseClaimsJws(authToken);            return true;
         }catch (SignatureException e) {
             log.warn("Invalid JWT signature: {}", e.getMessage());
         }catch (MalformedJwtException e){
@@ -59,8 +65,9 @@ public class JWTutils {
             log.warn("Unsupported JWT token: {}", e.getMessage());
         }catch (IllegalArgumentException e){
             log.warn("JWT claims string is empty: {}", e.getMessage());
-        } catch (Exception e){
-            e.printStackTrace();
+        }
+        catch (Exception e){
+            log.error("JWT error: {}", e.getMessage());
         }
         return  false;
     }

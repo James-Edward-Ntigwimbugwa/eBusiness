@@ -17,7 +17,6 @@ public class BruteForceProtectionServiceImpl implements BruteForceProtectionServ
         int maxCacheLimit = 3;
         cache = new ConcurrentHashMap<>(maxCacheLimit);
     }
-
     @Autowired
     private UserAccountRepository userAccountRepository;
 

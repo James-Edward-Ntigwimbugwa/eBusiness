@@ -16,7 +16,7 @@ import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @Order(Ordered.HIGHEST_PRECEDENCE)
-public class CustomConfig {
+public class CustomCorsConfig {
     @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

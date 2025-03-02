@@ -1,7 +1,7 @@
 package tz.business.eCard.config;
 
-
-import jakarta.servlet.Filter;
+import tz.business.eCard.jwt.AuthTokenFilter;
+import tz.business.eCard.userDetailService.UserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,52 +20,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
-import tz.business.eCard.jwt.AuthTokenFilter;
-import tz.business.eCard.userDetailService.UserDetailServiceImpl;
+
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
-    @Autowired
-    private UserDetailServiceImpl userDetailServiceImpl;
 
-//    @Autowired
+    @Autowired
+    private UserDetailServiceImpl userDetailsService;
+
+    @Autowired
     private AuthenticationEntryPoint unauthorizedHandler;
 
     @Bean
-    PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
-
-    @Bean
-    public AuthenticationEntryPoint unauthorizedEntryPoint() {return unauthorizedHandler;}
-
-    @Bean
-    public AuthTokenFilter authTokenFilter() {return new AuthTokenFilter();}
-
-    @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailServiceImpl);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
-
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll() // Example public endpoints
-                        .anyRequest().authenticated()
-                )
-                .formLogin(AbstractHttpConfigurer::disable) // Adjust based on your needs
-                .csrf(AbstractHttpConfigurer::disable); // Adjust based on your needs
-        return http.build();
+    public AuthTokenFilter authenticationJwtTokenFilter(){
+        return new AuthTokenFilter();
     }
 
     @Bean
@@ -73,30 +43,45 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .exceptionHandling(httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(unauthorizedHandler))
-                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS) )
-                .authorizeHttpRequests(request->request.requestMatchers(
-                        "/auth/**",
-                        "/files/upload/image/**",
-                        "/uploads/**",
-                        "/v2/api-docs",
-                        "/v3/api-docs",
-                        "/v3/api-docs/**",
-                        "/swagger-ui.html",
-                        "/swagger-ui/**",
-                        "/swagger-resources/",
-                        "/swagger-resources/**",
-                        "/webjars/**",
-                        "/gui"
-                ).permitAll().requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers(
+                                "/auth/**",
+                                "/files/upload/image/**",
+                                "/uploads/**",
+                                "/v2/api-docs",
+                                "/v3/api-docs",
+                                "/v3/api-docs/**",
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/swagger-resources/",
+                                "/swagger-resources/**",
+                                "/webjars/**",
+                                "/gui"
+                        ).permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
+
     @Bean
-    protected AuthTokenFilter authenticationJwtTokenFilter() {
-        return new AuthTokenFilter();
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
 }

@@ -14,7 +14,6 @@ import java.util.List;
 @Setter
 
 public class GroupDto {
-
     private String groupName;
     private  String groupUuid ;
     private List<Cards> cardsList ;

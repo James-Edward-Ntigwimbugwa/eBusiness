@@ -22,7 +22,6 @@ import java.util.logging.Logger;
 
 
 @Service
-@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class UserAccountsServiceImpl implements UserAccountService {
     private Logger log = Logger.getLogger(UserAccountsServiceImpl.class.getName());
 
@@ -31,8 +30,7 @@ public class UserAccountsServiceImpl implements UserAccountService {
     private UserAccount userAccount;
     @Autowired
     private LoggedUser loggedUser;
-//    @A
-//    utowired
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
@@ -132,7 +130,7 @@ public class UserAccountsServiceImpl implements UserAccountService {
                 return new Response<>(false,ResponseCode.SUCCESS,savedUser);
             }
         } catch (Exception e){
-            e.printStackTrace();
+            log.warning(e.getMessage());
         }
 
         return new Response<>(false , ResponseCode.UNAUTHORIZED , "Unauthorized");
@@ -181,7 +179,7 @@ public class UserAccountsServiceImpl implements UserAccountService {
           return userAccountRepository.findALlByDeletedFalse(pageable);
 
         }catch (Exception e){
-            e.printStackTrace();
+            log.warning(e.getMessage());
         }
         return new PageImpl<>(new ArrayList<>());
     }

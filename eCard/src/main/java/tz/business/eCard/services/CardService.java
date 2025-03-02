@@ -13,11 +13,11 @@ public interface CardService {
     Response<Cards> updateCard(CardDto cardDto);
     Response<Cards> deleteCard(String cardId);
     Page<Cards> getAllCards(Pageable pageable);
-    Page<Cards> searchCardsByTitle(String title, Pageable pageable);
+    Page<Cards>  searchCardsByTitle(String title, Pageable pageable);
     Page<Cards> getAllActiveCards(Pageable pageable);
     Page<Cards> getAllPublicActiveCards(Pageable pageable);
     Response<Cards> getCardByUuid(String uuid);
-    Page<Cards> getCardsByUserUuid(Pageable pageable);
+    Page<Cards> getCardsByUserUuid(String uuid , Pageable pageable);
     Response<Cards> saveCard(MyCardDto myCardDto);
     Response<Cards> groupCards(GroupCardsDto groupCardsDto);
 

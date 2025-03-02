@@ -9,9 +9,14 @@ import tz.business.eCard.dtos.CardLinksDto;
 import tz.business.eCard.models.CardLinks;
 import tz.business.eCard.utils.Response;
 
+import javax.smartcardio.Card;
+
 public interface CardLinksService {
     Response<CardLinks> createLink(CardLinksDto cardsLinkDto) ;
     Page<CardLinks> getAllLinks(Pageable pageable);
     Page<CardLinks> getCardsByUserId(String userId, Pageable pageable);
+    Page<CardLinks> getCardLinkByUrl(String url, Pageable pageable);
+    Page<CardLinks> getCardLinkByQRCode(String qrCode, Pageable pageable);
+    Page<CardLinks> deleteCardLinkByUrl(String url, Pageable pageable);
 
 }

@@ -9,9 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-
 public class CardDto {
-
     private String uuid ;
     private  String title ;
     private  String cardDescription ;

@@ -15,8 +15,10 @@ import org.hibernate.annotations.Where;
 @AllArgsConstructor
 @Getter
 @Setter
-@Entity(name = "cards")
-@Where(clause = "delete = false")
+@Entity
+@Table(name = "cards", indexes = {@Index(name = "idx_email" , columnList = "email"),
+                @Index(name = "idx_organization" , columnList = "organization")})
+@Where(clause = "deleted = false")
 @SQLDelete(sql = "UPDATE cards SET deleted = true WHERE id = ?" , check = ResultCheckStyle.COUNT )
 
 public class Cards extends BaseEntity {
@@ -32,7 +34,7 @@ public class Cards extends BaseEntity {
     @Column(name = "card_logo")
     private String cardLogo;
 
-    @Column(name = "profile_photo")
+    @Column(name = "profile_photo" , nullable = true)
     private String profilePhoto;
 
     @Column(name = "address" , nullable = false)
@@ -63,13 +65,12 @@ public class Cards extends BaseEntity {
     private String fontColor;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_uuid" , referencedColumnName = "uuid")
-    @JsonBackReference
+    @JoinColumn(name = "user_uuid", referencedColumnName = "uuid")
+    @JsonBackReference("cards-user") // Unique name
     private UserAccount user;
 
     @ManyToOne
-    @JoinColumn(name = "group_uuid" , referencedColumnName = "id")
-    @JsonBackReference
+    @JoinColumn(name = "group_uuid", referencedColumnName = "id")
+    @JsonBackReference("cards-group") // Unique name
     private CardGroup group;
-
 }

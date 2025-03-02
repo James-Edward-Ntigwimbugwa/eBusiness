@@ -3,11 +3,13 @@ package tz.business.eCard.repositories;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import tz.business.eCard.models.Cards;
 import tz.business.eCard.models.UserAccount;
 
 import java.util.Optional;
 
+@Repository
 public interface CardRepository extends JpaRepository<Cards, Long> {
 
     Optional<Cards> findFirstByUuid(String uuid);
@@ -26,12 +28,12 @@ public interface CardRepository extends JpaRepository<Cards, Long> {
 
     Optional<Cards> findFirstByUserUuid(UserAccount userUuid);
     Optional<Cards> findCardsByAddress(String address);
-
+    Page<Cards> findAllByActiveTrueAndDeletedFalse(Pageable pageable);
 
     Long  countAllByUserUuid(UserAccount userUuid);
 
     Long countAllByDeletedFalse();
 
-    Page<Cards> findAllByUserUuidAndDeletedFalse(UserAccount userUuid, Pageable pageable);
+    Page<Cards> findAllByUserUuidAndDeletedFalse(String userUuid, Pageable pageable);
 
 }

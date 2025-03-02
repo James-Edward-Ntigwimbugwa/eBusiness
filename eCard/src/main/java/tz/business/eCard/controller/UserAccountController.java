@@ -14,7 +14,6 @@ import tz.business.eCard.utils.Response;
 
 @RestController
 @RequestMapping(path = "api/v1/users/")
-@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class UserAccountController {
 
     @Autowired(required = false)
@@ -36,7 +35,6 @@ public class UserAccountController {
     @GetMapping(path = "get-user/{uuid}")
     public ResponseEntity<?> getUserByUuid(@PathVariable String uuid){
         Response<UserAccount> getUser = userAccountService.getUserByUuid(uuid);
-
         return ResponseEntity.ok().body(getUser);
     }
 
@@ -45,7 +43,6 @@ public class UserAccountController {
                                          @RequestParam(value = "size", defaultValue =  "25")Integer size){
         Pageable pageable = PageRequest.of(page,size);
         Page<UserAccount> all = userAccountService.getAllUserAccounts(pageable);
-
         return ResponseEntity.ok()
                 .body(all);
     }
@@ -67,7 +64,7 @@ public class UserAccountController {
         return  ResponseEntity.ok().body(officials);
     }
 
-    @GetMapping(path = "/delete-user")
+    @GetMapping(path = "/delete-user/{uuid}")
     public ResponseEntity<?> deleteUserByUuid(@PathVariable String uuid){
         Response<UserAccount> deleteUser = userAccountService.deleteUserAccount(uuid);
         return ResponseEntity.ok().body(deleteUser);

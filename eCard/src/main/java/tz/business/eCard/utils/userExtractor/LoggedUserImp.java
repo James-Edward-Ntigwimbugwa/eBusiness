@@ -56,8 +56,8 @@ public class LoggedUserImp implements LoggedUser {
                     Object uuid = principalMap.get("uuid"); // Add this line to get the email
 
                     return new UserInfo(
-                            String.valueOf(Long.parseLong((String) id)), // Pass id as Long
-                            uuid != null ? uuid.toString() : null, // Pass email or null,
+                            Long.parseLong(id.toString()), // Pass id as Long
+                            uuid != null ? uuid.toString() : null, // Pass uuid or null,
                             true, // Add your logic for accountNonExpired
                             true, // Add your logic for accountNonLocked
                             true, // Add your logic for credentialsNonExpired

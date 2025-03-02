@@ -22,10 +22,10 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     Logger log = LoggerFactory.getLogger(AuthTokenFilter.class);
     @Autowired
     private JWTutils jwtutils;
-
+    @Autowired
     private UserDetailServiceImpl userDetailServiceImpl;
     @Override
-    protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String jwt = parseJwt(request);
             if (jwt != null && jwtutils.validateJwtToken(jwt)) {
@@ -43,7 +43,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     }
 
     @Override
-    public boolean shouldNotFilter(@NotNull HttpServletRequest request) throws ServletException {
+    public boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
 
         return request.getServletPath().startsWith("/auth/**")
                 || request.getServletPath().startsWith("/gui/**")
@@ -53,7 +53,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 || request.getServletPath().startsWith("/uploads/**");
     }
 
-    private String parseJwt(@NotNull HttpServletRequest request) {
+    private String parseJwt(HttpServletRequest request) {
         String headerAuth = request.getHeader("Authorization");
         if(StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
             return headerAuth.replace("Bearer ", "").trim();

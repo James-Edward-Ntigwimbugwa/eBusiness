@@ -1,9 +1,8 @@
 package tz.business.eCard.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Basic;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,12 +13,14 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-@Entity(name = "user_account")
+@Entity
+@Table(name = "user_account", indexes = @Index(name = "idx_lastname_firstname" , columnList = "lastName , firstName"))
 @SQLDelete(sql = "UPDATE user_account SET deleted = true WHERE id=?" , check = ResultCheckStyle.COUNT)
 @Where(clause = "deleted = false")
 public class UserAccount extends BaseEntity{
@@ -100,11 +101,21 @@ public class UserAccount extends BaseEntity{
     @JsonIgnore
     private  LocalDateTime refreshTokenTime;
 
+    // For CardGroup owner relationship
+    @OneToMany(mappedBy = "owner")
+    @JsonManagedReference("card-group-owner")
+    private List<CardGroup> groups;
+
+    // For Cards user relationship (if present)
+    @OneToMany(mappedBy = "user")
+    @JsonManagedReference("cards-user")
+    private List<Cards> userCards;
+
+
     private boolean accountLocked = false;
     private  boolean accountExpired = false;
     private boolean credentialsExpired = false;
     private  boolean enabled = false;
     private  boolean accountLockedByUser = false;
-
 
 }

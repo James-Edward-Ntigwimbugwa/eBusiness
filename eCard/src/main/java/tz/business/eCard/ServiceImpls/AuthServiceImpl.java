@@ -95,7 +95,7 @@ public class AuthServiceImpl implements AuthService {
             if(!isValidEmail(userAccountDto.getEmail())){
                 return new Response<>(true, ResponseCode.BAD_REQUEST, "Invalid email");
             }
-            if(!isValidPhoneNumber(userAccountDto.getPhoneNumber())){
+            if(isValidPhoneNumber(userAccountDto.getPhoneNumber())){
                 return new Response<>(true , ResponseCode.BAD_REQUEST,"Invalid phone number");
             }
 
@@ -158,7 +158,7 @@ public class AuthServiceImpl implements AuthService {
             userAccountRepository.save(account);
             return new Response<>(false, ResponseCode.SUCCESS,"User registered successfully", account);
         }catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
         return new Response<>(true, ResponseCode.BAD_REQUEST, "Unknown error occurred");
     }
@@ -174,7 +174,7 @@ public class AuthServiceImpl implements AuthService {
         Pattern VALID_EMAIL_ADDRESS_REGEX =
                 Pattern.compile("(^(([2]{1}[5]{2})|([0]{1}))[1-9]{2}[0-9]{7}$)", Pattern.CASE_INSENSITIVE);
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(number);
-        return matcher.find();
+        return !matcher.find();
     }
     @Override
     public Response<LoginResponseDto> revokeToken(String refreshToken) {
@@ -185,7 +185,7 @@ public class AuthServiceImpl implements AuthService {
             }
             return new Response<>(true, ResponseCode.NOT_FOUND, "Invalid refresh token");
         }catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
         return new Response<>(true, ResponseCode.BAD_REQUEST, "Invalid refresh token");
     }
@@ -205,7 +205,7 @@ public class AuthServiceImpl implements AuthService {
         return new Response<>(true,ResponseCode.SUCCESS,"Successfully logged in");
 
         }catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
         return new Response<>(true,ResponseCode.BAD_REQUEST, "Unknown error occurred");
     }
@@ -232,7 +232,7 @@ public class AuthServiceImpl implements AuthService {
                 return new Response<>(true,ResponseCode.SUCCESS,"Password updated successfully");
 
             }catch (Exception e){
-                e.printStackTrace();
+                log.warn(e.getMessage());
             }
         }
         return new Response<>(true,ResponseCode.BAD_REQUEST, "Unknown error occurred");
