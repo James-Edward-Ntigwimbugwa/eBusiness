@@ -17,8 +17,8 @@ import org.springframework.context.annotation.Configuration;
                 description = "FEEDBACK PLATFORM RESTful API",
                 license = @License(
                         name = "MIT License"),
-                contact = @Contact(url = "https://www.linkedin.com/in/melckzedeck-james-4109031a6?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app",
-                        name = "Melckzedeck James")))
+                contact = @Contact(url = "a",
+                        name = "James Edward")))
 @SecurityScheme(
         name = "Bearer Authentication",
         type = SecuritySchemeType.HTTP,
