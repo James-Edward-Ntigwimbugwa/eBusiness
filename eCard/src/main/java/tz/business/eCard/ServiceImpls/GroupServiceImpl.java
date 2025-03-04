@@ -1,7 +1,6 @@
 package tz.business.eCard.ServiceImpls;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -17,9 +16,7 @@ import tz.business.eCard.services.GroupService;
 import tz.business.eCard.utils.Response;
 import tz.business.eCard.utils.ResponseCode;
 import tz.business.eCard.utils.userExtractor.LoggedUser;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 

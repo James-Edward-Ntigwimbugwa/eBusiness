@@ -15,8 +15,6 @@ import tz.business.eCard.models.Cards;
 import tz.business.eCard.services.CardService;
 import tz.business.eCard.utils.Response;
 
-import javax.ws.rs.QueryParam;
-
 @Slf4j
 @RestController
 @RequestMapping(path = "/api/v1/cards")
@@ -61,9 +59,9 @@ public class CardController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> searchCard(@QueryParam("title") String keyword,
-                                        @RequestParam(defaultValue = "25" , value = "page")Integer page,
-                                        @RequestParam(defaultValue = "10" , value = "size") Integer size) {
+    public ResponseEntity<?> searchCard(@RequestParam("title") String keyword,
+                                        @RequestParam(defaultValue = "0" , value = "page")Integer page,
+                                        @RequestParam(defaultValue = "25" , value = "size") Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<Cards> response = cardService.searchCardsByTitle(keyword , pageRequest);
         return ResponseEntity.status(HttpStatus.OK).body(response);

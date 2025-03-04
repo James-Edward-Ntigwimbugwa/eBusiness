@@ -20,13 +20,13 @@ public class CardGroupController {
     @Autowired
     private GroupService groupService;
 
-
     @PostMapping("/create-update")
     private ResponseEntity<?> createUpdateGroup(@RequestBody GroupDto groupDto) {
         log.info("Endpoint hit with createUpdateGroup groupDto: {}", groupDto);
         Response<CardGroup> response =  groupService.createUpdateGroup(groupDto);
         return ResponseEntity.ok().body(response);
     }
+
     @DeleteMapping("/delete/{uuid}")
     public ResponseEntity<?> deleteCardGroup(@PathVariable String uuid) {
         Response<CardGroup> response = groupService.deleteGroup(uuid);
@@ -38,7 +38,7 @@ public class CardGroupController {
                                          @RequestParam(defaultValue = "25" , value = "25")int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<CardGroup> response =  groupService.getAllUserGroups(pageable);
-        return ResponseEntity.status(HttpStatus.OK).body(response) ;
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping("/api/v1/group/{uuid}")

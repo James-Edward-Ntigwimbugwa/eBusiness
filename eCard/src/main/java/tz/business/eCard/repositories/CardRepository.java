@@ -31,6 +31,7 @@ public interface CardRepository extends JpaRepository<Cards, Long> {
     Page<Cards> findAllByActiveTrueAndDeletedFalse(Pageable pageable);
 
     Long  countAllByUserUuid(UserAccount userUuid);
+    Long countAllByUserIdAndDeletedFalse(UserAccount userId);
 
     Long countAllByDeletedFalse();
 
