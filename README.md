@@ -110,6 +110,6 @@ Distributed under MIT License. See `LICENSE` for details.
 
 **💡 Pro Tip**: Use Postman for API testing and explore our pre-configured Swagger UI for endpoint experimentation!
 
-📧 **Contact**: [jamesedwards2001.tz@gmail.com](mailto:your.email@domain.com)  
+📧 **Contact**: [jamesedwards2001.tz@gmail.com]
 🔗 **Direct Contact Tanzania number**: [+255716521848]
 ```
