@@ -21,7 +21,7 @@ import java.io.Serializable;
 public class MyCards extends BaseEntity implements Serializable {
 
     @Column(name = "favourites")
-    private String favourites;
+    private Boolean favourites;
 
     @ManyToOne
     @JoinColumn(name = "card_id" , referencedColumnName = "id")

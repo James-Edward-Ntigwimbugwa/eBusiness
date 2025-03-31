@@ -121,6 +121,11 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <compilerArguments>
+                        <arg>-Xlint:-options</arg>
+                        <arg>-Xlint:deprecation</arg>
+                        <arg>-Xlint:unchecked</arg>
+                    </compilerArguments>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
