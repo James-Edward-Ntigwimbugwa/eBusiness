@@ -7,6 +7,6 @@ import tz.business.eCard.models.Location;
 import java.util.List;
 import java.util.UUID;
 @Repository
-public interface LocationRepository extends JpaRepository<Location, Long> {
+public interface LocationRepository extends JpaRepository<Location, UUID> {
     List<Location> findByUserId(UUID userId);
 }

@@ -14,6 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class LoginResponseDto {
     private String token;
+    private String uuid;
     private String refreshToken;
     private String tokenType;
     private String username;

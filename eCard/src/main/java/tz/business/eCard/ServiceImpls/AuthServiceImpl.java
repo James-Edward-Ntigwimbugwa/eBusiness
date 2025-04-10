@@ -246,7 +246,7 @@ public class AuthServiceImpl implements AuthService {
                UserAccount userAccount = userAccountOptional.get();
                userAccount.setActive(true);
                userAccountRepository.save(userAccount);
-               return new Response<>(true, ResponseCode.SUCCESS, "User activated successfully");
+               return new Response<>(false, ResponseCode.SUCCESS, "User activated successfully");
            }else {
                return new Response<>(true, ResponseCode.UNAUTHORIZED, "No user with this " + code +" exists");
            }
@@ -291,6 +291,7 @@ public class AuthServiceImpl implements AuthService {
 
             LoginResponseDto loginResponseDto = new LoginResponseDto(
                     jwtToken,
+                    userAccount.getUuid(),
                     refreshToken,
                     "Bearer",
                     userAccount.getUserName(),
