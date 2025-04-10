@@ -1,5 +1,4 @@
 package tz.business.eCard.ServiceImpls;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -178,14 +177,14 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Response<Cards> deleteCard(String cardId) {
+    public void deleteCard(String cardId) {
         try{
             UserAccount user = loggedUser.getUserAccount();
             if(user == null) {
-                return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Unauthorized access");
+                return;
             }
             if(cardId == null) {
-                return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Card id is null");
+                return;
             }
             Optional<Cards> cardsOptional = cardRepository.findFirstByUuid(cardId);
             if(cardsOptional.isPresent()) {
@@ -194,12 +193,10 @@ public class CardServiceImpl implements CardService {
                 cards.setActive(false);
                 cardRepository.save(cards);
                 cardRepository.delete(cards);
-                return new Response<>(true, ResponseCode.SUCCESS, "Cards deleted successfully");
             }
         }catch (Exception e){
             e.printStackTrace();
         }
-        return new Response<>(true, ResponseCode.BAD_REQUEST, "Unknown error occurred");
     }
 
     @Override
@@ -261,9 +258,14 @@ public class CardServiceImpl implements CardService {
     @Override
     public Response<Cards> getCardByUuid(String uuid) {
         try{
-
+            UserAccount user = loggedUser.getUserAccount();
+            if(user == null) {
+                return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Unauthorized access");
+            }
+            Optional<Cards> card = cardRepository.findFirstByUuid(uuid);
+            return card.map(cards -> new Response<>(true, ResponseCode.SUCCESS, cards)).orElseGet(() -> new Response<>(true, ResponseCode.NULL_ARGUMENT, "Card not found"));
         } catch (RuntimeException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         return new Response<>(true , ResponseCode.BAD_REQUEST, "Unknown error occurred");
     }
@@ -308,7 +310,6 @@ public class CardServiceImpl implements CardService {
             if(optionalCards.isPresent() && cardGroupOptional.isPresent()) {
                 Cards cards = optionalCards.get();
                 CardGroup group = cardGroupOptional.get();
-
                 cards.setGroup(group);
                 group.getCards().add(cards);
                 Cards cards1 = cardRepository.save(cards);

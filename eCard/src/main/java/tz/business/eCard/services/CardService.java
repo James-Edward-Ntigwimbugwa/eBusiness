@@ -11,7 +11,7 @@ import tz.business.eCard.utils.Response;
 public interface CardService {
     Response<Cards> createCard(CardDto cardDto);
     Response<Cards> updateCard(CardDto cardDto);
-    Response<Cards> deleteCard(String cardId);
+    void deleteCard(String cardId);
     Page<Cards> getAllCards(Pageable pageable);
     Page<Cards>  searchCardsByTitle(String title, Pageable pageable);
     Page<Cards> getAllActiveCards(Pageable pageable);
