@@ -4,9 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -14,6 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class LoginResponseDto {
     private String token;
+    private String uuid;
     private String refreshToken;
     private String tokenType;
     private String username;

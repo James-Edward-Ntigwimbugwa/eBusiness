@@ -291,6 +291,7 @@ public class AuthServiceImpl implements AuthService {
 
             LoginResponseDto loginResponseDto = new LoginResponseDto(
                     jwtToken,
+                    userAccount.getUuid(),
                     refreshToken,
                     "Bearer",
                     userAccount.getUserName(),
