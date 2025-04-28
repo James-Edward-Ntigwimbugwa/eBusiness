@@ -29,9 +29,7 @@ public class LocationServiceImpl implements LocationService {
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT , "User id is null");
             }
             location.setUserId(locationDto.getUserId());
-            location.setLatitude(locationDto.getLatitude());
-            location.setLongitude(locationDto.getLongitude());
-            location.setLatitude(locationDto.getLatitude());
+            location.setLocation(locationDto.getPoint());
             location.setCreated(LocalDateTime.now());
             return new Response<>(true, ResponseCode.SUCCESS , "Location Added Successfully",  locationRepository.save(location));
 
