@@ -1,6 +1,9 @@
 package tz.business.eCard.ServiceImpls;
 
 import lombok.extern.slf4j.Slf4j;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tz.business.eCard.dtos.LocationDto;
@@ -21,6 +24,7 @@ public class LocationServiceImpl implements LocationService {
     @Autowired
     private LocationRepository locationRepository;
 
+    private final GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
     @Override
     public Response<Location> save(LocationDto locationDto) {
         try{
@@ -29,9 +33,14 @@ public class LocationServiceImpl implements LocationService {
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT , "User id is null");
             }
             location.setUserId(locationDto.getUserId());
-            location.setLocation(locationDto.getPoint());
+
+            location.setLatitude(locationDto.getLatitude());
+            location.setLongitude(locationDto.getLongitude());
+            Coordinate coordinate = new Coordinate(locationDto.getLongitude(), locationDto.getLatitude());
+
+            location.setLocation(geometryFactory.createPoint(coordinate));
             location.setCreated(LocalDateTime.now());
-            return new Response<>(true, ResponseCode.SUCCESS , "Location Added Successfully",  locationRepository.save(location));
+            return new Response<>(false, ResponseCode.SUCCESS , "Location Added Successfully",  locationRepository.save(location));
 
         }catch (Exception e){
             log.error("An error occurred {}" ,e.getMessage());

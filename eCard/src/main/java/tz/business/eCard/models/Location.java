@@ -22,6 +22,12 @@ public class Location{
     @Column(name = "userId" , nullable = false)
     private UUID userId;
 
+    @Column(name = "latitude" , nullable = false)
+    private Double latitude;
+
+    @Column(name = "longitude" , nullable = false)
+    private Double longitude;
+
     @Column(columnDefinition = "GEOMETRY(Point,4326)")
     @JdbcTypeCode(SqlTypes.GEOMETRY)
     private Point location;

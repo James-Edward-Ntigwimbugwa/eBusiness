@@ -16,6 +16,7 @@ import java.util.UUID;
 public class LocationDto {
     private UUID uuid;
     private  UUID userId;
-    private Point point;
+    private double longitude;
+    private double latitude;
     private LocalDateTime dateTime;
 }
