@@ -150,7 +150,8 @@ public class AuthServiceImpl implements AuthService {
             MessageRequestDto messageRequestDto= new MessageRequestDto();
             messageRequestDto.setMessage("Your verification code is " + nextInt + " \n Use the code to activate your account");
             messageRequestDto.setSenderId("15200");
-            messageRequestDto.setReceiversPhoneNumber(userAccountDto.getPhoneNumber());
+//            messageRequestDto.setReceiversPhoneNumber(userAccountDto.getPhoneNumber());
+            messageRequestDto.setReceiversPhoneNumber("+255716521848");
             messageRequestDto.setDateOTPSent(LocalDate.now().toString());
             Response<MessageResponseDto> responseMessage =  bulkSmsIntegration.sendMessage(messageRequestDto);
 
