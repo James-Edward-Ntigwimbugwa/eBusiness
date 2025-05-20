@@ -12,7 +12,8 @@ import tz.business.eCard.config.TwilioConfig;
  * @January 19 , 2025
  */
 
-@SpringBootApplication(scanBasePackages = "tz.business.eCard")
+// @SpringBootApplication(scanBasePackages = "tz.business.eCard")
+@SpringBootApplication
 public class ECardApplication {
 
 	public static void main(String[] args) {
