@@ -12,6 +12,8 @@
           <option value="eCard" />
           <option value="eCard" />
           <option value="eCard" />
+          <option value="ecard" />
+          <option value="ecard" />
         </list>
       </option>
       <option name="ignoredPackages">
@@ -19,10 +21,14 @@
           <option value="org.xmlunit:xmlunit-core:2.9.1" />
           <option value="com.google.guava:guava:20.0" />
           <option value="io.springfox:springfox-swagger-ui:2.9.2" />
+          <option value="org.apache.tomcat.embed:tomcat-embed-core:10.1.34" />
+          <option value="commons-io:commons-io:2.7" />
         </list>
       </option>
       <option name="ignoredReasons">
         <list>
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
           <option value="Not exploitable" />
           <option value="Not exploitable" />
           <option value="Not exploitable" />
