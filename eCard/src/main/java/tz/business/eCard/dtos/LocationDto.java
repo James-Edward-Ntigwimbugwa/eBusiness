@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.locationtech.jts.geom.Point;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -15,7 +16,7 @@ import java.util.UUID;
 public class LocationDto {
     private UUID uuid;
     private  UUID userId;
-    private double latitude;
     private double longitude;
+    private double latitude;
     private LocalDateTime dateTime;
 }
