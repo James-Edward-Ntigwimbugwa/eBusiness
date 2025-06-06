@@ -1,0 +1,43 @@
+services:
+  java-ecard:
+    build:
+      context: ./eCard
+    container_name: java-ecard
+    restart: unless-stopped
+    init: true
+    ports:
+      - "8080:8080"  # Expose Spring Boot API
+    depends_on:
+      - postgres-db
+    networks:
+      - backend
+    # env_file: ./eCard/.env  # Uncomment if .env file exists
+    # If you have a .env file with DB and mail credentials, uncomment above
+
+  postgres-db:
+    image: postgres:15
+    container_name: postgres-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ecard_fyp
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ntigwimbugwa2001
+    ports:
+      - "5432:5432"  # Expose PostgreSQL for local dev
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ecard_fyp"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  pgdata:
+    # Persistent storage for PostgreSQL

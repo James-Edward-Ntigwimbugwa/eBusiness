@@ -8,6 +8,8 @@ import tz.business.eCard.models.UserAccount;
 import tz.business.eCard.repositories.CardRepository;
 import tz.business.eCard.repositories.SavedCardRepository;
 import tz.business.eCard.repositories.UserAccountRepository;
+import tz.business.eCard.utils.Response;
+import tz.business.eCard.utils.ResponseCode;
 
 import java.util.List;
 
@@ -28,10 +30,11 @@ public class SavedCardService {
     public SavedCard saveCard(Long userId, Long cardId) {
         // Check if the card is already saved
         if (savedCardRepository.existsByUserIdAndCardId(userId, cardId)) {
+//            return new Response(true , ResponseCode.ALREADY_EXISTS, "Card already saved by this user");
             throw new RuntimeException("Card already saved by this user");
         }
 
-        UserAccountService user = (UserAccountService) userRepository.findById(userId)
+        UserAccount user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Cards card = cardRepository.findById(cardId)
