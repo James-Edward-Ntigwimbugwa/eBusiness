@@ -13,50 +13,14 @@ import tz.business.eCard.utils.ResponseCode;
 
 import java.util.List;
 
-@Service
-public class SavedCardService {
-    @Autowired
-    private SavedCardRepository savedCardRepository;
 
-    @Autowired
-    private NotificationService notificationService;
+public interface SavedCardService {
 
-    @Autowired
-    private UserAccountRepository userRepository;
+    public SavedCard saveCard(Long userId, Long cardId);
 
-    @Autowired
-    private CardRepository cardRepository;
+    public void unsaveCard(Long userId, Long cardId);
 
-    public SavedCard saveCard(Long userId, Long cardId) {
-        // Check if the card is already saved
-        if (savedCardRepository.existsByUserIdAndCardId(userId, cardId)) {
-//            return new Response(true , ResponseCode.ALREADY_EXISTS, "Card already saved by this user");
-            throw new RuntimeException("Card already saved by this user");
-        }
+    public List<SavedCard> findByCardId(Long cardId) ;
 
-        UserAccount user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        Cards card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new RuntimeException("Card not found"));
-
-        SavedCard savedCard = new SavedCard((UserAccount) user, card);
-        SavedCard result = savedCardRepository.save(savedCard);
-
-        notificationService.createCardSavedNotification((UserAccount) user, card);
-
-        return result;
-    }
-
-    public void unsaveCard(Long userId, Long cardId) {
-        savedCardRepository.deleteByUserIdAndCardId(userId, cardId);
-    }
-
-    public List<SavedCard> findByCardId(Long cardId) {
-        return savedCardRepository.findByCardId(cardId);
-    }
-
-    public List<SavedCard> findByUserId(Long userId) {
-        return savedCardRepository.findByUserId(userId);
-    }
+    public List<SavedCard> findByUserId(Long userId) ;
 }
