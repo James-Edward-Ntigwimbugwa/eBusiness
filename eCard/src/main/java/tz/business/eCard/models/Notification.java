@@ -25,11 +25,11 @@ public class Notification {
 
     @ManyToOne
     @JoinColumn(name = "actor_id")
-    private UserAccount actor; // The user who saved the card
+    private UserAccount actor; // The user who saved the card or sent the notification
 
     @ManyToOne
     @JoinColumn(name = "card_id")
-    private Cards card; // The card that was saved
+    private Cards card; // The card that was saved or referenced
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -38,7 +38,10 @@ public class Notification {
     private boolean isRead;
 
     @Column(name = "type")
-    private String type; // For example, "CARD_SAVED"
+    private String type; // For example, "CARD_SAVED" or "CARDHOLDER_MESSAGE"
+
+    @Column(name = "message")
+    private String message; // Custom message for CARDHOLDER_MESSAGE notifications
 
     public Notification(UserAccount recipient, UserAccount actor, Cards card, String type) {
         this.recipient = recipient;
@@ -48,6 +51,4 @@ public class Notification {
         this.createdAt = LocalDateTime.now();
         this.isRead = false;
     }
-
-
 }

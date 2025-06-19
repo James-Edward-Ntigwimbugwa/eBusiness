@@ -34,6 +34,12 @@ public class CardServiceImpl implements CardService {
     private LoggedUser loggedUser;
 
     @Override
+    public Cards findById(Long id) {
+        return cardRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Card not found with id: " + id));
+    }
+    
+    @Override
     public Response<Cards> createCard(CardDto cardDto) {
         try{
             UserAccount user = loggedUser.getUserAccount();
@@ -200,17 +206,49 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Page<Cards> getAllCards(Pageable pageable) {
+    public Page<CardDto> getAllCards(Pageable pageable) {
         try {
             UserAccount user = loggedUser.getUserAccount();
-            if(user == null) {
+            if (user == null) {
                 return new PageImpl<>(Collections.emptyList());
             }
-            return cardRepository.findAllByDeletedFalse(pageable);
-        }catch (Exception e){
+            return cardRepository.findAllByDeletedFalse(pageable).map(this::convertToDTO);
+        } catch (Exception e) {
             log.error(e.getMessage());
         }
         return new PageImpl<>(Collections.emptyList());
+    }
+
+    private CardDto convertToDTO(Cards card) {
+        CardDto dto = new CardDto();
+        dto.setId(card.getId());
+        dto.setUuid(card.getUuid());
+//        dto.setCreatedAt(card.getCreatedAt());
+//        dto.setUpdatedAt(card.getUpdatedAt());
+//        dto.setCreatedBy(card.getCreatedBy());
+//        dto.setDeleted(card.getDeleted());
+//        dto.setActive(card.getActive());
+        dto.setTitle(card.getTitle());
+        dto.setOrganization(card.getOrganization());
+        dto.setPublishCard(card.isPublishCard());
+        dto.setCardLogo(card.getCardLogo());
+        dto.setProfilePhoto(card.getProfilePhoto());
+        dto.setAddress(card.getAddress());
+        dto.setCardDescription(card.getCardDescription());
+        dto.setPhoneNumber(card.getPhoneNumber());
+        dto.setDepartment(card.getDepartment());
+        dto.setEmail(card.getEmail());
+//        dto.setLinkedIn(card.getLinkedIn());
+        dto.setWebsiteUrl(card.getWebsiteUrl());
+        dto.setBackgroundColor(card.getBackgroundColor());
+        dto.setFontColor(card.getFontColor());
+//        if (card.getUser() != null) {
+//            dto.setUserUuid(card.getUser().getUuid());
+//        }
+//        if (card.getGroup() != null) {
+//            dto.setGroupId(card.getGroup().getId());
+//        }
+        return dto;
     }
 
     @Override

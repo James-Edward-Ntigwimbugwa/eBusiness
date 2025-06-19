@@ -10,6 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CardDto {
+    private Long id;
     private String uuid ;
     private  String title ;
     private  String cardDescription ;

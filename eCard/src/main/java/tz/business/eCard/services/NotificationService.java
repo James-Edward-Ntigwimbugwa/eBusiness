@@ -1,26 +1,21 @@
 package tz.business.eCard.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Service;
-import tz.business.eCard.dtos.NotificationDTO;
 import tz.business.eCard.models.Cards;
 import tz.business.eCard.models.Notification;
 import tz.business.eCard.models.UserAccount;
-import tz.business.eCard.repositories.NotificationRepository;
 
 import java.util.List;
 
 public interface NotificationService {
+    void createCardSavedNotification(UserAccount actor, Cards card);
 
-    public void createCardSavedNotification(UserAccount actor, Cards card);
+    List<Notification> getUserNotifications(Long userId);
 
-    public List<Notification> getUserNotifications(Long userId) ;
+    long countUnreadNotifications(Long userId);
 
-    public long countUnreadNotifications(Long userId);
+    void markAsRead(Long notificationId);
 
-    public void markAsRead(Long notificationId) ;
+    void markAllAsRead(Long userId);
 
-    public void markAllAsRead(Long userId) ;
-
+    void sendNotificationToSavedUsers(Long cardId, String message);
 }

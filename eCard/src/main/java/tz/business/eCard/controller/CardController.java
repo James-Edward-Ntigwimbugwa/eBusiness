@@ -27,7 +27,7 @@ public class CardController {
     public ResponseEntity<?> getCards(@RequestParam(defaultValue = "0" , value = "page")Integer page,
                                       @RequestParam(defaultValue = "25" , value = "size")Integer size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Cards> all = cardService.getAllCards(pageable);
+        Page<CardDto> all = cardService.getAllCards(pageable);
         return ResponseEntity.status(HttpStatus.OK).body(all);
     }
 

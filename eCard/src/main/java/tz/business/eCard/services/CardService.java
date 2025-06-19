@@ -9,10 +9,12 @@ import tz.business.eCard.models.Cards;
 import tz.business.eCard.utils.Response;
 
 public interface CardService {
+    Cards findById(Long id);
+
     Response<Cards> createCard(CardDto cardDto);
     Response<Cards> updateCard(CardDto cardDto);
     void deleteCard(String cardId);
-    Page<Cards> getAllCards(Pageable pageable);
+    Page<CardDto> getAllCards(Pageable pageable);
     Page<Cards>  searchCardsByTitle(String title, Pageable pageable);
     Page<Cards> getAllActiveCards(Pageable pageable);
     Page<Cards> getAllPublicActiveCards(Pageable pageable);

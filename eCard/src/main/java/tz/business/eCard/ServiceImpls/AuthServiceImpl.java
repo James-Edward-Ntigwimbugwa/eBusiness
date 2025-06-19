@@ -292,6 +292,8 @@ public class AuthServiceImpl implements AuthService {
 
             LoginResponseDto loginResponseDto = new LoginResponseDto(
                     jwtToken,
+                    userAccount.getId(),
+                    userAccount.getEmail(),
                     userAccount.getUuid(),
                     refreshToken,
                     "Bearer",
@@ -300,8 +302,8 @@ public class AuthServiceImpl implements AuthService {
                     userAccount.getFirstName(),
                     userAccount.getLastName(),
                     userAccount.getPhoneNumber(),
-                    userAccount.getCompanyName(),
                     userAccount.getJobTitle(),
+                    userAccount.getCompanyName(),
                     userAccount.getLastLoginTime()
             );
 

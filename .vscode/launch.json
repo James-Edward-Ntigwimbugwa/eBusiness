@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-ECardApplication<ecard>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "tz.business.eCard.ECardApplication",
+            "projectName": "ecard",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

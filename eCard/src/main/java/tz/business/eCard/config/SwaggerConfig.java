@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @OpenAPIDefinition(
-        servers = { @Server(url = "http://localhost:8089") },
+        servers = { @Server(url = "http://localhost:8080") },
         info = @Info(title = "FEEDBACK PLATFORM API",
                 version = "v1",
                 description = "FEEDBACK PLATFORM RESTful API",

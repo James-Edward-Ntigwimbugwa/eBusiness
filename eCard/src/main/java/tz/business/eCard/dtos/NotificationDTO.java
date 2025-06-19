@@ -1,9 +1,10 @@
 package tz.business.eCard.dtos;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import tz.business.eCard.models.Cards;
+
 import java.time.LocalDateTime;
 
 @Getter
@@ -12,10 +13,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class NotificationDTO {
     private Long id;
-    private String type;
+    private Long recipientId;
     private Long actorId;
-    private String actorName;
     private Long cardId;
-    private String cardName;
+    private String type;
+    private String message;
     private LocalDateTime createdAt;
+    private boolean isRead;
+
 }

@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class LoginResponseDto {
     private String token;
+    private Long id;
+    private String email;
     private String uuid;
     private String refreshToken;
     private String tokenType;
