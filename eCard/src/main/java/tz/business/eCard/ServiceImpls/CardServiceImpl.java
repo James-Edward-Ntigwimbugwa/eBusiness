@@ -38,7 +38,7 @@ public class CardServiceImpl implements CardService {
         return cardRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Card not found with id: " + id));
     }
-    
+
     @Override
     public Response<Cards> createCard(CardDto cardDto) {
         try{
@@ -58,76 +58,51 @@ public class CardServiceImpl implements CardService {
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Title is null");
             }
 
-            if(cardDto.getLinkedin()==null || cardDto.getLinkedin().isBlank()) {
-                cards.setLinkedIn("");
-            }
-            if(cardDto.getEmail()==null || cardDto.getEmail().isBlank()) {
-                cards.setEmail("");
-            }
             if(cardDto.getPhoneNumber()==null || cardDto.getPhoneNumber().isBlank()) {
                 return new Response<>(true , ResponseCode.NULL_ARGUMENT , "Phone number is empty");
             }
-            if(cardDto.getWebsiteUrl()==null || cardDto.getWebsiteUrl().isBlank()) {
-                cards.setWebsiteUrl("");
-            }
+
             if(cardDto.getAddress()==null || cardDto.getAddress().isBlank()) {
                 return  new Response<>(true, ResponseCode.NULL_ARGUMENT, "Address is null");
             }
-            if(cardDto.getProfilePhoto()==null || cardDto.getProfilePhoto().isBlank()) {
-                cardDto.setProfilePhoto("");
-            }
-            else {
-                if(authService.isValidPhoneNumber(cardDto.getPhoneNumber())) {
-                    return  new Response<>(true, ResponseCode.BAD_REQUEST, "Invalid phone number");
-                } else {
-                    if (!cardDto.getPhoneNumber().isBlank() && !Objects.equals(cardDto.getPhoneNumber(), cards.getPhoneNumber())) {
-                        cards.setPhoneNumber(cardDto.getPhoneNumber());
-                    }
-                }
-            }
-            if(!cardDto.getTitle().isBlank() && !Objects.equals(cardDto.getTitle(), cards.getTitle())) {
-                cards.setTitle(cardDto.getTitle());
-            }
-            if(!cardDto.getOrganization().isBlank() && !Objects.equals(cardDto.getOrganization(), cards.getOrganization())) {
-                cards.setOrganization(cardDto.getOrganization());
-            }
-            if(!cardDto.getAddress().isBlank() && !Objects.equals(cardDto.getAddress(), cards.getAddress())) {
-                cards.setAddress(cardDto.getAddress());
-            }
-            if(!Objects.equals(cardDto.getProfilePhoto(), cards.getProfilePhoto())){
-                cards.setProfilePhoto(cardDto.getProfilePhoto());
-            }
-            if(!Objects.equals(cardDto.getCardDescription(), cards.getCardDescription())) {
-                cards.setCardDescription(cardDto.getCardDescription());
-            }
-            if(!Objects.equals(cardDto.getLinkedin(), cards.getLinkedIn())){
-                cards.setLinkedIn(cardDto.getLinkedin());
-            }
-            if(!Objects.equals(cardDto.getWebsiteUrl(), cards.getWebsiteUrl())){
-                cards.setWebsiteUrl(cardDto.getWebsiteUrl());
-            }
-            if(!Objects.equals(cardDto.getEmail(), cards.getEmail())){
-                cards.setEmail(cardDto.getEmail());
+
+            // Validate phone number
+            if(authService.isValidPhoneNumber(cardDto.getPhoneNumber())) {
+                return  new Response<>(true, ResponseCode.BAD_REQUEST, "Invalid phone number");
             }
 
-            if (!cardDto.getBackgroundColor().isBlank() && !Objects.equals(cardDto.getBackgroundColor(), cards.getBackgroundColor())) {
-                cards.setBackgroundColor(cardDto.getBackgroundColor());
-            }
+            // Set required fields
+            cards.setTitle(cardDto.getTitle());
+            cards.setOrganization(cardDto.getOrganization());
+            cards.setPhoneNumber(cardDto.getPhoneNumber());
+            cards.setAddress(cardDto.getAddress());
 
-            if (!cardDto.getFontColor().isBlank() && !Objects.equals(cardDto.getFontColor(), cards.getFontColor())) {
-                cards.setFontColor(cardDto.getFontColor());
-            }
+            // Set optional fields with defaults
+            cards.setLinkedIn(cardDto.getLinkedin() != null && !cardDto.getLinkedin().isBlank() ?
+                    cardDto.getLinkedin() : "");
 
-            if (!cardDto.getDepartment().isBlank() && !Objects.equals(cardDto.getDepartment(), cards.getDepartment())) {
-                cards.setDepartment(cardDto.getDepartment());
-            }
+            cards.setEmail(cardDto.getEmail() != null && !cardDto.getEmail().isBlank() ?
+                    cardDto.getEmail() : "");
 
-            if (!Objects.equals(cardDto.getProfilePhoto(), cards.getProfilePhoto())) {
-                cards.setProfilePhoto(cardDto.getProfilePhoto());
-            }
-            cards.setFontColor(cardDto.getFontColor());
+            cards.setWebsiteUrl(cardDto.getWebsiteUrl() != null && !cardDto.getWebsiteUrl().isBlank() ?
+                    cardDto.getWebsiteUrl() : "");
+
+            cards.setProfilePhoto(cardDto.getProfilePhoto() != null && !cardDto.getProfilePhoto().isBlank() ?
+                    cardDto.getProfilePhoto() : "");
+
+            cards.setCardDescription(cardDto.getCardDescription() != null ?
+                    cardDto.getCardDescription() : "");
+
+            cards.setBackgroundColor(cardDto.getBackgroundColor() != null && !cardDto.getBackgroundColor().isBlank() ?
+                    cardDto.getBackgroundColor() : "");
+
+            cards.setFontColor(cardDto.getFontColor() != null && !cardDto.getFontColor().isBlank() ?
+                    cardDto.getFontColor() : "");
+
+            cards.setDepartment(cardDto.getDepartment() != null && !cardDto.getDepartment().isBlank() ?
+                    cardDto.getDepartment() : "");
+
             cards.setPublishCard(cardDto.isPublishCard());
-
             cards.setUser(user);
             cards.setDeleted(false);
             cards.setActive(true);
@@ -136,7 +111,7 @@ public class CardServiceImpl implements CardService {
             return  new Response<>(false, ResponseCode.SUCCESS,"Card saved successfully" ,cards1);
 
         }catch (Exception e){
-            log.error(e.getMessage());
+            log.error("Error creating card: ", e);
         }
         return new Response<>(true, ResponseCode.BAD_REQUEST, "Unknown error occurred");
     }
