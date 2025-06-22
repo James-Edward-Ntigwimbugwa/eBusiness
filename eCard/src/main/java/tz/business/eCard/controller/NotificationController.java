@@ -2,9 +2,8 @@ package tz.business.eCard.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tz.business.eCard.models.Cards;
 import tz.business.eCard.models.Notification;
-import tz.business.eCard.services.CardService; // Assuming this exists
+import tz.business.eCard.services.CardService;
 import tz.business.eCard.services.NotificationService;
 
 import java.util.List;
@@ -16,7 +15,7 @@ public class NotificationController {
     private NotificationService notificationService;
 
     @Autowired
-    private CardService cardService; // Assuming this exists for card retrieval
+    private CardService cardService;
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Notification>> getUserNotifications(@PathVariable Long userId) {

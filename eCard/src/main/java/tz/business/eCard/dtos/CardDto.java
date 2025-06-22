@@ -26,5 +26,7 @@ public class CardDto {
     private String department ;
     private  String backgroundColor;
     private String fontColor;
+    
+    
 
 }
