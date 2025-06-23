@@ -1,16 +1,20 @@
 package tz.business.eCard.controller;
 
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import tz.business.eCard.dtos.BioDto;
 import tz.business.eCard.dtos.UserAccountDto;
 import tz.business.eCard.models.UserAccount;
 import tz.business.eCard.services.UserAccountService;
 import tz.business.eCard.utils.Response;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "api/v1/users/")
@@ -18,6 +22,12 @@ public class UserAccountController {
 
     @Autowired(required = false)
     private UserAccountService userAccountService;
+
+    @PostMapping("/profile-photo-upload/{uuid}")
+    public  ResponseEntity<?> uploadProfilePhoto(@RequestParam("file") @NotNull MultipartFile file, @PathVariable String uuid){
+        Response<Map<String, Object>> uploadProfilePhoto = userAccountService.createUpdateProfilePhoto(uuid , file);
+        return  ResponseEntity.ok().body(uploadProfilePhoto);
+    }
 
     @PostMapping("/create-update")
     public ResponseEntity<?> createUser(@RequestBody UserAccountDto userAccountDto) {

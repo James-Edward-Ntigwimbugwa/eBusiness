@@ -2,10 +2,13 @@ package tz.business.eCard.services;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import tz.business.eCard.dtos.BioDto;
 import tz.business.eCard.dtos.UserAccountDto;
 import tz.business.eCard.models.UserAccount;
 import tz.business.eCard.utils.Response;
+
+import java.util.Map;
 
 @Service
 public interface UserAccountService {
@@ -24,5 +27,7 @@ public interface UserAccountService {
     Page<UserAccount> getVendors(Pageable pageable);
 
     Response<UserAccount> updateBio(BioDto bioDto);
+
+    Response<Map<String , Object>> createUpdateProfilePhoto(String uuid, MultipartFile file);
 
 }
