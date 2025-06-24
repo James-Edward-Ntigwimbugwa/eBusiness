@@ -37,8 +37,11 @@ public class Cards extends BaseEntity {
     @Column(name = "profile_photo" , nullable = true)
     private String profilePhoto;
 
-    @Column(name = "address" , nullable = false)
-    private String address;
+    @Column(name = "latitude")
+    private String latitude;
+
+    @Column(name="longitude")
+    private  String longitude;
 
     @Column(name = "card_description" , nullable = false)
     private String cardDescription;
@@ -63,6 +66,15 @@ public class Cards extends BaseEntity {
 
     @Column(name = "font_color")
     private String fontColor;
+
+    @Column(name="text_position")
+    private String textPosition;
+
+    @Column(name="logo_position")
+    private String logoPosition;
+
+    @Column(name = "font_style")
+    private  String fontStyle;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_uuid", referencedColumnName = "uuid")

@@ -25,7 +25,9 @@ public class Init implements ApplicationRunner{
             UserAccount userAccount;
             Optional<UserAccount> admin = userAccountRepository.findFirstByUserName("admin@eCard.go.tz");
             if(admin.isEmpty()){
-                log.info("======CREATING DEFAULT USER=======");
+                log.info("\n\n =========================================================================================\n\n" +
+                        "\t\t INITIALIZING AND CREATING DEFAULT ADMIN USER \n\n " +
+                        " =========================================================================================");
 
                 userAccount = new UserAccount();
                 userAccount.setUserName("admin@eCard.go.tz");

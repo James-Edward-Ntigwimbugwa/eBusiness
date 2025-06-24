@@ -62,10 +62,6 @@ public class CardServiceImpl implements CardService {
                 return new Response<>(true , ResponseCode.NULL_ARGUMENT , "Phone number is empty");
             }
 
-            if(cardDto.getAddress()==null || cardDto.getAddress().isBlank()) {
-                return  new Response<>(true, ResponseCode.NULL_ARGUMENT, "Address is null");
-            }
-
             // Validate phone number
             if(authService.isValidPhoneNumber(cardDto.getPhoneNumber())) {
                 return  new Response<>(true, ResponseCode.BAD_REQUEST, "Invalid phone number");
@@ -75,11 +71,19 @@ public class CardServiceImpl implements CardService {
             cards.setTitle(cardDto.getTitle());
             cards.setOrganization(cardDto.getOrganization());
             cards.setPhoneNumber(cardDto.getPhoneNumber());
-            cards.setAddress(cardDto.getAddress());
+            cards.setTextPosition(cardDto.getTextPosition());
+            cards.setLogoPosition(cardDto.getLogoPosition());
+            cards.setFontStyle(cardDto.getFontStyle());
 
             // Set optional fields with defaults
             cards.setLinkedIn(cardDto.getLinkedin() != null && !cardDto.getLinkedin().isBlank() ?
                     cardDto.getLinkedin() : "");
+
+            cards.setLatitude(cardDto.getLatitude() != null && !cardDto.getLatitude().isBlank() ?
+                    cardDto.getLatitude() : "");
+
+            cards.setLongitude(cardDto.getLongitude() != null && !cardDto.getLongitude().isBlank() ?
+                    cardDto.getLatitude() : "");
 
             cards.setEmail(cardDto.getEmail() != null && !cardDto.getEmail().isBlank() ?
                     cardDto.getEmail() : "");
@@ -125,9 +129,6 @@ public class CardServiceImpl implements CardService {
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Title is null");
             }
 
-            if(cardDto.getAddress()==null || cardDto.getAddress().isBlank()) {
-                return  new Response<>(true, ResponseCode.NULL_ARGUMENT, "Address is null");
-            }
 
             if(cardDto.getOrganization()==null || cardDto.getOrganization().isBlank()) {
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Organization is null");
@@ -143,7 +144,6 @@ public class CardServiceImpl implements CardService {
             if(cardsOptional.isPresent()) {
                 cards = cardsOptional.get();
                 cards.setTitle(cardDto.getTitle());
-                cards.setAddress(cardDto.getAddress());
                 cards.setOrganization(cardDto.getOrganization());
                 cards.setEmail(cardDto.getEmail());
                 cards.setPhoneNumber(cardDto.getPhoneNumber());
@@ -208,7 +208,11 @@ public class CardServiceImpl implements CardService {
         dto.setPublishCard(card.isPublishCard());
         dto.setCardLogo(card.getCardLogo());
         dto.setProfilePhoto(card.getProfilePhoto());
-        dto.setAddress(card.getAddress());
+        dto.setLongitude(card.getLongitude());
+        dto.setLatitude(card.getLatitude());
+        dto.setLogoPosition(card.getLogoPosition());
+        dto.setTextPosition(card.getTextPosition());
+        dto.setFontStyle(card.getFontStyle());
         dto.setCardDescription(card.getCardDescription());
         dto.setPhoneNumber(card.getPhoneNumber());
         dto.setDepartment(card.getDepartment());

@@ -16,8 +16,12 @@ public class CardDto {
     private  String cardDescription ;
     private  boolean publishCard ;
     private  String organization ;
-    private  String address ;
     private String cardLogo;
+    private String textPosition;
+    private  String logoPosition ;
+    private  String fontStyle ;
+    private String latitude ;
+    private  String longitude ;
     private String profilePhoto ;
     private String phoneNumber ;
     private  String email ;
