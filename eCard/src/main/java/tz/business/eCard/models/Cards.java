@@ -43,6 +43,9 @@ public class Cards extends BaseEntity {
     @Column(name="longitude")
     private  String longitude;
 
+    @Column(name="selected_address")
+    private  String selected_address;
+
     @Column(name = "card_description" , nullable = false)
     private String cardDescription;
 

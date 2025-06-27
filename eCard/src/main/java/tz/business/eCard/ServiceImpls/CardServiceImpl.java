@@ -1,4 +1,5 @@
 package tz.business.eCard.ServiceImpls;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,7 @@ import tz.business.eCard.services.CardService;
 import tz.business.eCard.utils.Response;
 import tz.business.eCard.utils.ResponseCode;
 import tz.business.eCard.utils.userExtractor.LoggedUser;
+
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
@@ -41,16 +43,16 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public Response<Cards> createCard(CardDto cardDto) {
-        try{
+        try {
             UserAccount user = loggedUser.getUserAccount();
-            log.info("user {}" , user);
+            log.info("user {}", user);
             Cards cards = new Cards();
 
-            if(user == null) {
-                return  new Response<>(true, ResponseCode.UNAUTHORIZED, "Unauthorized");
+            if (user == null) {
+                return new Response<>(true, ResponseCode.UNAUTHORIZED, "Unauthorized");
             }
 
-            if(cardDto.getOrganization()==null || cardDto.getOrganization().isBlank()) {
+            if (cardDto.getOrganization() == null || cardDto.getOrganization().isBlank()) {
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Organization is null");
             }
 
@@ -58,13 +60,13 @@ public class CardServiceImpl implements CardService {
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Title is null");
             }
 
-            if(cardDto.getPhoneNumber()==null || cardDto.getPhoneNumber().isBlank()) {
-                return new Response<>(true , ResponseCode.NULL_ARGUMENT , "Phone number is empty");
+            if (cardDto.getPhoneNumber() == null || cardDto.getPhoneNumber().isBlank()) {
+                return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Phone number is empty");
             }
 
             // Validate phone number
-            if(authService.isValidPhoneNumber(cardDto.getPhoneNumber())) {
-                return  new Response<>(true, ResponseCode.BAD_REQUEST, "Invalid phone number");
+            if (authService.isValidPhoneNumber(cardDto.getPhoneNumber())) {
+                return new Response<>(true, ResponseCode.BAD_REQUEST, "Invalid phone number");
             }
 
             // Set required fields
@@ -84,6 +86,9 @@ public class CardServiceImpl implements CardService {
 
             cards.setLongitude(cardDto.getLongitude() != null && !cardDto.getLongitude().isBlank() ?
                     cardDto.getLatitude() : "");
+
+            cards.setSelected_address(cardDto.getSelectedAddress() != null && !cardDto.getSelectedAddress().isBlank() ?
+                    cardDto.getSelectedAddress() : "");
 
             cards.setEmail(cardDto.getEmail() != null && !cardDto.getEmail().isBlank() ?
                     cardDto.getEmail() : "");
@@ -112,9 +117,9 @@ public class CardServiceImpl implements CardService {
             cards.setActive(true);
 
             Cards cards1 = cardRepository.save(cards);
-            return  new Response<>(false, ResponseCode.SUCCESS,"Card saved successfully" ,cards1);
+            return new Response<>(false, ResponseCode.SUCCESS, "Card saved successfully", cards1);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error creating card: ", e);
         }
         return new Response<>(true, ResponseCode.BAD_REQUEST, "Unknown error occurred");
@@ -122,26 +127,26 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public Response<Cards> updateCard(CardDto cardDto) {
-        try{
+        try {
             UserAccount user = loggedUser.getUserAccount();
 
-            if(cardDto.getTitle()==null || cardDto.getTitle().isEmpty()) {
+            if (cardDto.getTitle() == null || cardDto.getTitle().isEmpty()) {
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Title is null");
             }
 
 
-            if(cardDto.getOrganization()==null || cardDto.getOrganization().isBlank()) {
+            if (cardDto.getOrganization() == null || cardDto.getOrganization().isBlank()) {
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Organization is null");
             }
 
-            if(user == null) {
-                log.warn("UNAUTHORIZED ACCESS WITH CREDENTIALS {}" , cardDto.getEmail() + " " +cardDto.getPhoneNumber());
-                return  new Response<>(true, ResponseCode.NULL_ARGUMENT, "Unauthorized access");
+            if (user == null) {
+                log.warn("UNAUTHORIZED ACCESS WITH CREDENTIALS {}", cardDto.getEmail() + " " + cardDto.getPhoneNumber());
+                return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Unauthorized access");
             }
 
             Cards cards = new Cards();
             Optional<Cards> cardsOptional = cardRepository.findFirstByUuid(cardDto.getUuid());
-            if(cardsOptional.isPresent()) {
+            if (cardsOptional.isPresent()) {
                 cards = cardsOptional.get();
                 cards.setTitle(cardDto.getTitle());
                 cards.setOrganization(cardDto.getOrganization());
@@ -151,7 +156,7 @@ public class CardServiceImpl implements CardService {
             } else {
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Card not found");
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return new Response<>(true, ResponseCode.BAD_REQUEST, "Unknown error occurred");
@@ -159,23 +164,23 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public void deleteCard(String cardId) {
-        try{
+        try {
             UserAccount user = loggedUser.getUserAccount();
-            if(user == null) {
+            if (user == null) {
                 return;
             }
-            if(cardId == null) {
+            if (cardId == null) {
                 return;
             }
             Optional<Cards> cardsOptional = cardRepository.findFirstByUuid(cardId);
-            if(cardsOptional.isPresent()) {
+            if (cardsOptional.isPresent()) {
                 Cards cards = cardsOptional.get();
                 cards.setDeleted(true);
                 cards.setActive(false);
                 cardRepository.save(cards);
                 cardRepository.delete(cards);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -232,13 +237,13 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public Page<Cards> searchCardsByTitle(String title, Pageable pageable) {
-        try{
+        try {
             UserAccount user = loggedUser.getUserAccount();
-            if(user == null) {
+            if (user == null) {
                 return null;
             }
             return cardRepository.findAllByTitleAndDeletedFalse(title, pageable);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return new PageImpl<>(Collections.emptyList());
@@ -249,11 +254,11 @@ public class CardServiceImpl implements CardService {
 
         try {
             UserAccount user = loggedUser.getUserAccount();
-            if(user == null) {
+            if (user == null) {
                 return new PageImpl<>(Collections.emptyList());
             }
             return cardRepository.findAllByActiveTrueAndDeletedFalse(pageable);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return new PageImpl<>(Collections.emptyList());
@@ -263,20 +268,21 @@ public class CardServiceImpl implements CardService {
     public Page<Cards> getAllPublicActiveCards(Pageable pageable) {
         try {
             UserAccount user = loggedUser.getUserAccount();
-            if(user == null) {
+            if (user == null) {
                 return new PageImpl<>(Collections.emptyList());
             }
             return cardRepository.findAllByDeletedFalseAndPublishCardTrue(pageable);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return new PageImpl<>(Collections.emptyList());    }
+        return new PageImpl<>(Collections.emptyList());
+    }
 
     @Override
     public Response<Cards> getCardByUuid(String uuid) {
-        try{
+        try {
             UserAccount user = loggedUser.getUserAccount();
-            if(user == null) {
+            if (user == null) {
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Unauthorized access");
             }
             Optional<Cards> card = cardRepository.findFirstByUuid(uuid);
@@ -284,27 +290,27 @@ public class CardServiceImpl implements CardService {
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
-        return new Response<>(true , ResponseCode.BAD_REQUEST, "Unknown error occurred");
+        return new Response<>(true, ResponseCode.BAD_REQUEST, "Unknown error occurred");
     }
 
     @Override
     public Page<Cards> getCardsByUserUuid(String uuid, Pageable pageable) {
         UserAccount user = loggedUser.getUserAccount();
-        if(user==null) {
+        if (user == null) {
             return null;
         }
-        return cardRepository.findAllByUserUuidAndDeletedFalse(uuid , pageable);
+        return cardRepository.findAllByUserUuidAndDeletedFalse(uuid, pageable);
     }
 
     @Override
     public Response<Cards> saveCard(MyCardDto myCardDto) {
-        try{
+        try {
             UserAccount user = loggedUser.getUserAccount();
-            if(user == null) {
+            if (user == null) {
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Unauthorized access");
             }
             Optional<Cards> optionalCards = cardRepository.findFirstByUuid(myCardDto.getUuid());
-            if(optionalCards.isPresent()) {
+            if (optionalCards.isPresent()) {
                 Cards cards = optionalCards.get();
                 cardRepository.save(cards);
                 return new Response<>(true, ResponseCode.SUCCESS, "Card saved successfully");
@@ -312,7 +318,7 @@ public class CardServiceImpl implements CardService {
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Card not found");
             }
 
-        }catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             e.printStackTrace();
         }
         return new Response<>(true, ResponseCode.BAD_REQUEST, "Unknown error occurred");
@@ -320,20 +326,20 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public Response<Cards> groupCards(GroupCardsDto groupCardsDto) {
-        try{
+        try {
             Optional<Cards> optionalCards = cardRepository.findFirstByUuid(groupCardsDto.getCardUuid());
-            Optional<CardGroup> cardGroupOptional  =  cardGroupRepository.findFirstByUuid(groupCardsDto.getCardUuid());
+            Optional<CardGroup> cardGroupOptional = cardGroupRepository.findFirstByUuid(groupCardsDto.getCardUuid());
 
-            if(optionalCards.isPresent() && cardGroupOptional.isPresent()) {
+            if (optionalCards.isPresent() && cardGroupOptional.isPresent()) {
                 Cards cards = optionalCards.get();
                 CardGroup group = cardGroupOptional.get();
                 cards.setGroup(group);
                 group.getCards().add(cards);
                 Cards cards1 = cardRepository.save(cards);
                 cardGroupRepository.save(group);
-                return new Response<>(false , ResponseCode.SUCCESS, "Cards group saved successfully" , cards1);
+                return new Response<>(false, ResponseCode.SUCCESS, "Cards group saved successfully", cards1);
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return new Response<>(true, ResponseCode.BAD_REQUEST, "Unknown error occurred");

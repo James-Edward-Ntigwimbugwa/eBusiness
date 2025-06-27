@@ -22,6 +22,7 @@ public class CardDto {
     private  String fontStyle ;
     private String latitude ;
     private  String longitude ;
+    private  String selectedAddress;
     private String profilePhoto ;
     private String phoneNumber ;
     private  String email ;
