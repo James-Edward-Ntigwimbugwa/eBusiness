@@ -203,7 +203,7 @@ public class AuthServiceImpl implements AuthService {
             if(user == null){
                 return new Response<>(true,ResponseCode.UNAUTHORIZED, "Unauthorized" );
             }
-        return new Response<>(true,ResponseCode.SUCCESS,"Successfully logged in");
+        return new Response<>(false,ResponseCode.SUCCESS,"Successfully logged in");
 
         }catch (Exception e){
             log.error(e.getMessage());

@@ -24,7 +24,7 @@ public class DeviceProximity {
     private UUID userId;
 
     @Column(nullable = false)
-    private UUID detectedDeviceId;
+    private String detectedDeviceId;
 
     @Column(nullable = false)
     private double proximity;

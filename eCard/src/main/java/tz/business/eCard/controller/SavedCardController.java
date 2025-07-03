@@ -31,6 +31,7 @@ public class SavedCardController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<SavedCard>> getUserSavedCards(@PathVariable Long userId) {
+        log.info("Method executed in saved card controller with userId: {}", userId);
         List<SavedCard> savedCards = savedCardService.findByUserId(userId);
         return ResponseEntity.ok(savedCards);
     }
