@@ -1,4 +1,5 @@
 package tz.business.eCard.controller;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +9,7 @@ import tz.business.eCard.services.SavedCardService;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/saved-cards")
 public class SavedCardController {
@@ -16,6 +18,7 @@ public class SavedCardController {
 
     @PostMapping("/save-card")
     public ResponseEntity<SavedCard> saveCard(@RequestBody SaveCardRequest request) {
+        log.info("Endpoint hit with request: {}", request);
         SavedCard savedCard = savedCardService.saveCard(request.getUserId(), request.getCardId());
         return ResponseEntity.ok(savedCard);
     }
