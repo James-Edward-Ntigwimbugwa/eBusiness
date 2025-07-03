@@ -66,7 +66,7 @@ public class DeviceProximityServiceImp implements DeviceProximityService {
                         nearbyDevices.add(new DeviceProximity(
                                 UUID.randomUUID(),
                                 userId,
-                                card.getUuid(), // This is now the detected device/card ID
+                                card.getUuid(),
                                 distance,
                                 LocalDateTime.now()
                         ));

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tz.business.eCard.dtos.NearbyCardInfo;
 import tz.business.eCard.models.DeviceProximity;
 import tz.business.eCard.models.ProximitySearchRequest;
 import tz.business.eCard.services.DeviceProximityService;
@@ -35,12 +36,12 @@ public class DeviceProximityController {
      */
 
     @PostMapping("/search-with-json-body")
-    public ResponseEntity<Response<DeviceProximity>> findNearbyDevices(
+    public ResponseEntity<Response<NearbyCardInfo>> findNearbyDevices(
             @Valid @RequestBody ProximitySearchRequest request){
 
         try{
             log.info("Searching for nearby devices at lat{} , long{}", request.getLatitude(), request.getLongitude());
-            List<DeviceProximity> nearbyDevices = deviceProximityService.findNearbyDevices(
+            List<NearbyCardInfo> nearbyDevices = deviceProximityService.findNearbyCardsWithDetails(
                     request.getUserUuid() ,
                     request.getLatitude(),
                     request.getLongitude()
