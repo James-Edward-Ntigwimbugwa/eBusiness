@@ -13,7 +13,7 @@ public interface CardService {
 
     Response<Cards> createCard(CardDto cardDto);
     Response<Cards> updateCard(CardDto cardDto);
-    void deleteCard(String cardId);
+    Response<Boolean> deleteCard(String cardId);
     Page<CardDto> getAllCards(Pageable pageable);
     Page<Cards>  searchCardsByTitle(String title, Pageable pageable);
     Page<Cards> getAllActiveCards(Pageable pageable);

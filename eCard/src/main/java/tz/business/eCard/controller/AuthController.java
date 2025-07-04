@@ -1,5 +1,6 @@
 package tz.business.eCard.controller;
 
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +50,22 @@ AuthController {
     @PostMapping("/activate-account")
     public ResponseEntity<?> activateAccount(@RequestParam String otp) {
         Response<?> response = authService.activateAccount(otp);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @PostMapping("/revoke-token")
+    public  ResponseEntity<?> revokeToken(@RequestParam String refreshToken){
+        Response<LoginResponseDto> response = authService.revokeToken(refreshToken);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @PostMapping("/generate-new-access-token")
+    public ResponseEntity<?> generateNewAccessToken(
+            @NotNull(message = "refreshToken is required")
+            @RequestParam String refreshToken ,
+            @RequestBody LoginDto loginResponseDto)
+    {
+        Response<LoginResponseDto> response = authService.generateNewAccessToken(refreshToken , loginResponseDto);
         return ResponseEntity.ok().body(response);
     }
 }

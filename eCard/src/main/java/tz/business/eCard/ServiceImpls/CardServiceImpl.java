@@ -1,5 +1,6 @@
 package tz.business.eCard.ServiceImpls;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -163,25 +164,34 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public void deleteCard(String cardId) {
+    @Transactional
+    public Response<Boolean> deleteCard(String cardUuid) {
         try {
             UserAccount user = loggedUser.getUserAccount();
             if (user == null) {
-                return;
+                return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Unauthorized access");
             }
-            if (cardId == null) {
-                return;
+            if (cardUuid == null) {
+                return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Card UUID is null");
             }
-            Optional<Cards> cardsOptional = cardRepository.findFirstByUuid(cardId);
+            Optional<Cards> cardsOptional = cardRepository.findFirstByUuid(cardUuid);
             if (cardsOptional.isPresent()) {
-                Cards cards = cardsOptional.get();
-                cards.setDeleted(true);
-                cards.setActive(false);
-                cardRepository.save(cards);
-                cardRepository.delete(cards);
+                Cards card = cardsOptional.get();
+                card.setDeleted(true);
+                card.setActive(false);
+                card.setGroup(null);
+                card.setUser(null);
+                card.setPublishCard(false);
+                cardRepository.save(card);
+                cardRepository.deleteCardsByUuidAndUserUuid(cardUuid , user.getUuid());
+                cardRepository.delete(card);
+                return new Response<>(false, ResponseCode.SUCCESS, "Card deleted successfully", true);
+            }else {
+                return new Response<>(true, ResponseCode.NOT_FOUND, "No Card With Such Uuid");
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return new Response<>(true, ResponseCode.BAD_REQUEST, "Unknown error occurred");
         }
     }
 

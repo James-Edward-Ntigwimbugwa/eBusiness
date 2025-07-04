@@ -17,6 +17,8 @@ public interface CardRepository extends JpaRepository<Cards, Long> {
 
     Optional<Cards> findFirstByUuid(String uuid);
 
+    void deleteCardsByUuidAndUserUuid(String uuid, String userUuid);
+
     Optional<Cards> findFirstByUserUuidAndDeletedFalse(UserAccount account);
 
     Page<Cards> findAllByOrganizationAndDeletedFalse(String orgUuid, Pageable pageable);

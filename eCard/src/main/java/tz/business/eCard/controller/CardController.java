@@ -47,9 +47,9 @@ public class CardController {
     }
 
     @DeleteMapping(path = "/delete")
-    public ResponseEntity<?> deleteCard(@RequestParam String  id) {
-        cardService.deleteCard(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    public ResponseEntity<?> deleteCard(@RequestParam String cardUuid) {
+        Response<Boolean> response = cardService.deleteCard(cardUuid);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PutMapping("/update")

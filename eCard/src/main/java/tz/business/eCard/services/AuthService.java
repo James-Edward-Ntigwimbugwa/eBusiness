@@ -18,5 +18,6 @@ public interface AuthService {
     Response<String> activateAccount(String code);
     Response<String> requestOTP(String phoneNumber);
     Response<UserAccount> loginByEmail(String email);
+    Response<LoginResponseDto> generateNewAccessToken(String refreshToken , LoginDto loginDto);
 
 }

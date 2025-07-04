@@ -312,4 +312,30 @@ public class AuthServiceImpl implements AuthService {
 
         return new Response<>(false, ResponseCode.NOT_FOUND, "Incorrect login credentials");
     }
+
+    public Response<LoginResponseDto> generateNewAccessToken(String refreshToken, LoginDto loginDto){
+        try{
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwtToken = jwtUtils.generateJwtToken(authentication);
+            String newRefreshToken = UUID.randomUUID().toString();
+
+            Optional<UserAccount> accountOptional = userAccountRepository.findFirstByUserName(loginDto.getUsername());
+
+            if(accountOptional.isEmpty())
+                return new Response<>(true, ResponseCode.NOT_FOUND,"Invalid user credentials");
+
+            UserAccount userAccount = accountOptional.get();
+            if(!userAccount.getActive()) {
+                log.info("ACCOUNT NOT ACTIVATED");
+                return new Response<>(true, ResponseCode.BAD_REQUEST, "Please activate your account first");
+            }
+            else {
+                return this.getLoginResponse(accountOptional, jwtToken, newRefreshToken);
+            }
+        }catch (Exception e){
+            return new Response<>(true , ResponseCode.BAD_REQUEST , "Unknown error occurred");
+        }
+    }
 }
