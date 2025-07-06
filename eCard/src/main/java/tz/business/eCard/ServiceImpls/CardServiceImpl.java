@@ -85,7 +85,7 @@ public class CardServiceImpl implements CardService {
                     cardDto.getLatitude() : "");
 
             cards.setLongitude(cardDto.getLongitude() != null && !cardDto.getLongitude().isBlank() ?
-                    cardDto.getLatitude() : "");
+                    cardDto.getLongitude() : "");
 
             cards.setSelected_address(cardDto.getSelectedAddress() != null && !cardDto.getSelectedAddress().isBlank() ?
                     cardDto.getSelectedAddress() : "");
