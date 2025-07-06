@@ -64,12 +64,10 @@ public class CardServiceImpl implements CardService {
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Phone number is empty");
             }
 
-            // Validate phone number
             if (authService.isValidPhoneNumber(cardDto.getPhoneNumber())) {
                 return new Response<>(true, ResponseCode.BAD_REQUEST, "Invalid phone number");
             }
 
-            // Set required fields
             cards.setTitle(cardDto.getTitle());
             cards.setOrganization(cardDto.getOrganization());
             cards.setPhoneNumber(cardDto.getPhoneNumber());
@@ -77,7 +75,6 @@ public class CardServiceImpl implements CardService {
             cards.setLogoPosition(cardDto.getLogoPosition());
             cards.setFontStyle(cardDto.getFontStyle());
 
-            // Set optional fields with defaults
             cards.setLinkedIn(cardDto.getLinkedin() != null && !cardDto.getLinkedin().isBlank() ?
                     cardDto.getLinkedin() : "");
 
@@ -116,13 +113,18 @@ public class CardServiceImpl implements CardService {
             cards.setDeleted(false);
             cards.setActive(true);
 
+            // Add debug logging to verify the values
+            log.info("Setting latitude: {}", cardDto.getLatitude());
+            log.info("Setting longitude: {}", cardDto.getLongitude());
+            log.info("Setting address: {}", cardDto.getSelectedAddress());
+
             Card cards1 = cardRepository.save(cards);
             return new Response<>(false, ResponseCode.SUCCESS, "Card saved successfully", cards1);
 
         } catch (Exception e) {
             log.error("Error creating card: ", e);
+            return new Response<>(true, ResponseCode.BAD_REQUEST, "Unknown error occurred");
         }
-        return new Response<>(true, ResponseCode.BAD_REQUEST, "Unknown error occurred");
     }
 
     @Override
