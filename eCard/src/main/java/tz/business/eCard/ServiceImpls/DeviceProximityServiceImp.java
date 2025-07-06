@@ -42,7 +42,9 @@ public class DeviceProximityServiceImp implements DeviceProximityService {
 
     private final GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
 
-    // Inner classes for pathfinding
+    /**
+     * Inner classes for pathfinding
+     */
     public static class Node {
         public double lat, lng;
         public double gCost, hCost, fCost;
