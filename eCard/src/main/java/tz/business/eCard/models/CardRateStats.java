@@ -17,7 +17,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity(name = "card_rate_stats")
 public class CardRateStats  {
-
     @Id
     @Column(name="id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
