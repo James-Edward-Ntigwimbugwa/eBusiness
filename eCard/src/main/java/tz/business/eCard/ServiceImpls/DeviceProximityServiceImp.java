@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
 import tz.business.eCard.dtos.NearbyCardInfo;
-import tz.business.eCard.models.Cards;
+import tz.business.eCard.models.Card;
 import tz.business.eCard.models.DeviceProximity;
 import tz.business.eCard.models.UserAccount;
 import tz.business.eCard.repositories.CardRepository;
@@ -104,10 +104,10 @@ public class DeviceProximityServiceImp implements DeviceProximityService {
                 return new ArrayList<>();
             }
 
-            List<Cards> nearbyCards = getNearbyCards(latitude, longitude, MAX_DISTANCE);
+            List<Card> nearbyCards = getNearbyCards(latitude, longitude, MAX_DISTANCE);
             List<DeviceProximity> nearbyDevices = new ArrayList<>();
 
-            for (Cards card : nearbyCards) {
+            for (Card card : nearbyCards) {
                 try {
                     double cardLat = Double.parseDouble(card.getLatitude());
                     double cardLng = Double.parseDouble(card.getLongitude());
@@ -149,10 +149,10 @@ public class DeviceProximityServiceImp implements DeviceProximityService {
                 return new ArrayList<>();
             }
 
-            List<Cards> nearbyCards = getNearbyCards(latitude, longitude, MAX_DISTANCE);
+            List<Card> nearbyCards = getNearbyCards(latitude, longitude, MAX_DISTANCE);
             List<NearbyCardInfo> result = new ArrayList<>();
 
-            for (Cards card : nearbyCards) {
+            for (Card card : nearbyCards) {
                 try {
                     double cardLat = Double.parseDouble(card.getLatitude());
                     double cardLng = Double.parseDouble(card.getLongitude());
@@ -177,7 +177,7 @@ public class DeviceProximityServiceImp implements DeviceProximityService {
     /**
      * Create enhanced NearbyCardInfo with pathfinding calculations
      */
-    private NearbyCardInfo createEnhancedNearbyCardInfo(Cards card, double userLat, double userLng,
+    private NearbyCardInfo createEnhancedNearbyCardInfo(Card card, double userLat, double userLng,
                                                         double cardLat, double cardLng) {
 
         // Calculate straight-line distance
@@ -213,6 +213,7 @@ public class DeviceProximityServiceImp implements DeviceProximityService {
         cardInfo.setWalkingDistance(walkingPath.distance);
         cardInfo.setWalkingTime(walkingPath.estimatedTime);
         cardInfo.setDrivingDistance(drivingPath.distance);
+//        cardInfo.setPath(drivingPath.path);
         cardInfo.setDrivingTime(drivingPath.estimatedTime);
 
         return cardInfo;
@@ -505,12 +506,12 @@ public class DeviceProximityServiceImp implements DeviceProximityService {
     /**
      * Get nearby cards that are published and have valid coordinates
      */
-    private List<Cards> getNearbyCards(double userLat, double userLng, double maxDistance) {
+    private List<Card> getNearbyCards(double userLat, double userLng, double maxDistance) {
         try {
-            List<Cards> publishedCards = cardRepository.findByPublishCardTrueAndLatitudeIsNotNullAndLongitudeIsNotNullAndDeletedFalse();
-            List<Cards> nearbyCards = new ArrayList<>();
+            List<Card> publishedCards = cardRepository.findByPublishCardTrueAndLatitudeIsNotNullAndLongitudeIsNotNullAndDeletedFalse();
+            List<Card> nearbyCards = new ArrayList<>();
 
-            for (Cards card : publishedCards) {
+            for (Card card : publishedCards) {
                 try {
                     double cardLat = Double.parseDouble(card.getLatitude());
                     double cardLng = Double.parseDouble(card.getLongitude());

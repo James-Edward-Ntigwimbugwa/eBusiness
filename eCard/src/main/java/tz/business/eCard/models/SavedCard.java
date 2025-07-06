@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import tz.business.eCard.services.UserAccountService;
 
 import java.time.LocalDateTime;
 
@@ -26,12 +25,12 @@ public class SavedCard {
 
     @ManyToOne
     @JoinColumn(name = "card_id")
-    private Cards card; // The card that was saved
+    private Card card; // The card that was saved
 
     @Column(name = "saved_date")
     private LocalDateTime savedDate;
 
-    public SavedCard(UserAccount user, Cards card) {
+    public SavedCard(UserAccount user, Card card) {
         this.user = user;
         this.card = card;
     }

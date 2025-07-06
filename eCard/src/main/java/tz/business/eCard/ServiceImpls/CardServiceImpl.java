@@ -11,7 +11,7 @@ import tz.business.eCard.dtos.CardDto;
 import tz.business.eCard.dtos.GroupCardsDto;
 import tz.business.eCard.dtos.MyCardDto;
 import tz.business.eCard.models.CardGroup;
-import tz.business.eCard.models.Cards;
+import tz.business.eCard.models.Card;
 import tz.business.eCard.models.UserAccount;
 import tz.business.eCard.repositories.CardGroupRepository;
 import tz.business.eCard.repositories.CardRepository;
@@ -21,7 +21,6 @@ import tz.business.eCard.utils.ResponseCode;
 import tz.business.eCard.utils.userExtractor.LoggedUser;
 
 import java.util.Collections;
-import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -37,17 +36,17 @@ public class CardServiceImpl implements CardService {
     private LoggedUser loggedUser;
 
     @Override
-    public Cards findById(Long id) {
+    public Card findById(Long id) {
         return cardRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Card not found with id: " + id));
     }
 
     @Override
-    public Response<Cards> createCard(CardDto cardDto) {
+    public Response<Card> createCard(CardDto cardDto) {
         try {
             UserAccount user = loggedUser.getUserAccount();
             log.info("user {}", user);
-            Cards cards = new Cards();
+            Card cards = new Card();
 
             if (user == null) {
                 return new Response<>(true, ResponseCode.UNAUTHORIZED, "Unauthorized");
@@ -117,7 +116,7 @@ public class CardServiceImpl implements CardService {
             cards.setDeleted(false);
             cards.setActive(true);
 
-            Cards cards1 = cardRepository.save(cards);
+            Card cards1 = cardRepository.save(cards);
             return new Response<>(false, ResponseCode.SUCCESS, "Card saved successfully", cards1);
 
         } catch (Exception e) {
@@ -127,7 +126,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Response<Cards> updateCard(CardDto cardDto) {
+    public Response<Card> updateCard(CardDto cardDto) {
         try {
             UserAccount user = loggedUser.getUserAccount();
 
@@ -145,8 +144,8 @@ public class CardServiceImpl implements CardService {
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Unauthorized access");
             }
 
-            Cards cards = new Cards();
-            Optional<Cards> cardsOptional = cardRepository.findFirstByUuid(cardDto.getUuid());
+            Card cards = new Card();
+            Optional<Card> cardsOptional = cardRepository.findFirstByUuid(cardDto.getUuid());
             if (cardsOptional.isPresent()) {
                 cards = cardsOptional.get();
                 cards.setTitle(cardDto.getTitle());
@@ -174,9 +173,9 @@ public class CardServiceImpl implements CardService {
             if (cardUuid == null) {
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Card UUID is null");
             }
-            Optional<Cards> cardsOptional = cardRepository.findFirstByUuid(cardUuid);
+            Optional<Card> cardsOptional = cardRepository.findFirstByUuid(cardUuid);
             if (cardsOptional.isPresent()) {
-                Cards card = cardsOptional.get();
+                Card card = cardsOptional.get();
                 card.setDeleted(true);
                 card.setActive(false);
                 card.setGroup(null);
@@ -209,7 +208,7 @@ public class CardServiceImpl implements CardService {
         return new PageImpl<>(Collections.emptyList());
     }
 
-    private CardDto convertToDTO(Cards card) {
+    private CardDto convertToDTO(Card card) {
         CardDto dto = new CardDto();
         dto.setId(card.getId());
         dto.setUuid(card.getUuid());
@@ -246,7 +245,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Page<Cards> searchCardsByTitle(String title, Pageable pageable) {
+    public Page<Card> searchCardsByTitle(String title, Pageable pageable) {
         try {
             UserAccount user = loggedUser.getUserAccount();
             if (user == null) {
@@ -260,7 +259,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Page<Cards> getAllActiveCards(Pageable pageable) {
+    public Page<Card> getAllActiveCards(Pageable pageable) {
 
         try {
             UserAccount user = loggedUser.getUserAccount();
@@ -275,7 +274,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Page<Cards> getAllPublicActiveCards(Pageable pageable) {
+    public Page<Card> getAllPublicActiveCards(Pageable pageable) {
         try {
             UserAccount user = loggedUser.getUserAccount();
             if (user == null) {
@@ -289,13 +288,13 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Response<Cards> getCardByUuid(String uuid) {
+    public Response<Card> getCardByUuid(String uuid) {
         try {
             UserAccount user = loggedUser.getUserAccount();
             if (user == null) {
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Unauthorized access");
             }
-            Optional<Cards> card = cardRepository.findFirstByUuid(uuid);
+            Optional<Card> card = cardRepository.findFirstByUuid(uuid);
             return card.map(cards -> new Response<>(true, ResponseCode.SUCCESS, cards)).orElseGet(() -> new Response<>(true, ResponseCode.NULL_ARGUMENT, "Card not found"));
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -304,7 +303,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Page<Cards> getCardsByUserUuid(String uuid, Pageable pageable) {
+    public Page<Card> getCardsByUserUuid(String uuid, Pageable pageable) {
         UserAccount user = loggedUser.getUserAccount();
         if (user == null) {
             return null;
@@ -313,15 +312,15 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Response<Cards> saveCard(MyCardDto myCardDto) {
+    public Response<Card> saveCard(MyCardDto myCardDto) {
         try {
             UserAccount user = loggedUser.getUserAccount();
             if (user == null) {
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Unauthorized access");
             }
-            Optional<Cards> optionalCards = cardRepository.findFirstByUuid(myCardDto.getUuid());
+            Optional<Card> optionalCards = cardRepository.findFirstByUuid(myCardDto.getUuid());
             if (optionalCards.isPresent()) {
-                Cards cards = optionalCards.get();
+                Card cards = optionalCards.get();
                 cardRepository.save(cards);
                 return new Response<>(true, ResponseCode.SUCCESS, "Card saved successfully");
             } else {
@@ -335,17 +334,17 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Response<Cards> groupCards(GroupCardsDto groupCardsDto) {
+    public Response<Card> groupCards(GroupCardsDto groupCardsDto) {
         try {
-            Optional<Cards> optionalCards = cardRepository.findFirstByUuid(groupCardsDto.getCardUuid());
+            Optional<Card> optionalCards = cardRepository.findFirstByUuid(groupCardsDto.getCardUuid());
             Optional<CardGroup> cardGroupOptional = cardGroupRepository.findFirstByUuid(groupCardsDto.getCardUuid());
 
             if (optionalCards.isPresent() && cardGroupOptional.isPresent()) {
-                Cards cards = optionalCards.get();
+                Card cards = optionalCards.get();
                 CardGroup group = cardGroupOptional.get();
                 cards.setGroup(group);
                 group.getCards().add(cards);
-                Cards cards1 = cardRepository.save(cards);
+                Card cards1 = cardRepository.save(cards);
                 cardGroupRepository.save(group);
                 return new Response<>(false, ResponseCode.SUCCESS, "Cards group saved successfully", cards1);
             }

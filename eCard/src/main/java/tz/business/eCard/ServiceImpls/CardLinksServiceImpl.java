@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import tz.business.eCard.dtos.CardLinksDto;
 import tz.business.eCard.models.CardLinks;
-import tz.business.eCard.models.Cards;
+import tz.business.eCard.models.Card;
 import tz.business.eCard.models.UserAccount;
 import tz.business.eCard.repositories.CardLinksRepository;
 import tz.business.eCard.repositories.CardRepository;
@@ -56,7 +56,7 @@ public class CardLinksServiceImpl implements CardLinksService {
                 cardLinks.setQrCodeUrl("");
             }
             if(!cardLinks.getUuid().isBlank() && !Objects.equals(cardLinks.getUuid(), cardLinks.getUserUuid())){
-                Optional<Cards> linksOptional = cardRepository.findFirstByUuid(cardLinks.getUuid());
+                Optional<Card> linksOptional = cardRepository.findFirstByUuid(cardLinks.getUuid());
                 linksOptional.ifPresent(cards -> cardLinks.setUuid(cards.getUuid()));
             }
 

@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -22,14 +24,13 @@ public class NearbyCardInfo {
     private double latitude;
     private double longitude;
 
-    // New pathfinding and directional fields
     private String direction; // N, NE, E, SE, S, SW, W, NW
-    private double walkingDistance; // estimated walking distance in meters
-    private double walkingTime; // estimated walking time in minutes
-    private double drivingDistance; // estimated driving distance in meters
-    private double drivingTime; // estimated driving time in minutes
+    private double walkingDistance;
+    private double walkingTime;
+    private double drivingDistance;
+    private double drivingTime;
+//    private List<? extends NearbyCardInfo> path;
 
-    // Constructor for backward compatibility
     public NearbyCardInfo(String cardId, String title, String organization, String email,
                           String phoneNumber, String cardLogo, String profilePhoto,
                           double distance, double latitude, double longitude) {

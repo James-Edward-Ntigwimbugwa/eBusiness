@@ -31,7 +31,7 @@ public class CardLinks extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "cards_uuid" , referencedColumnName = "uuid")
     @JsonBackReference
-    private Cards cards;
+    private Card cards;
 
     @Column(name = "user_uuid")
     private String userUuid;

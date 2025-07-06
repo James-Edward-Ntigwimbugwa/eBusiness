@@ -27,5 +27,5 @@ public class CardGroup extends BaseEntity implements Serializable {
 
     @OneToMany(mappedBy = "group")
     @JsonManagedReference("cards-group")
-    private List<Cards> cards = new ArrayList<>();
+    private List<Card> cards = new ArrayList<>();
 }

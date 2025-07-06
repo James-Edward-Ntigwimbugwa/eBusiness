@@ -2,7 +2,7 @@ package tz.business.eCard.ServiceImpls;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tz.business.eCard.models.Cards;
+import tz.business.eCard.models.Card;
 import tz.business.eCard.models.SavedCard;
 import tz.business.eCard.models.UserAccount;
 import tz.business.eCard.repositories.CardRepository;
@@ -37,7 +37,7 @@ public class SavedCardServiceImpl implements SavedCardService {
         UserAccount user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Cards card = cardRepository.findById(cardId)
+        Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new RuntimeException("Card not found"));
 
         SavedCard savedCard = new SavedCard((UserAccount) user, card);

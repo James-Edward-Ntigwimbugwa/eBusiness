@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import tz.business.eCard.models.Cards;
+import tz.business.eCard.models.Card;
 
 import java.util.List;
 
@@ -16,5 +16,5 @@ import java.util.List;
 public class GroupDto {
     private String groupName;
     private  String groupUuid ;
-    private List<Cards> cardsList ;
+    private List<Card> cardsList ;
 }

@@ -1,13 +1,13 @@
 package tz.business.eCard.services;
 
-import tz.business.eCard.models.Cards;
+import tz.business.eCard.models.Card;
 import tz.business.eCard.models.Notification;
 import tz.business.eCard.models.UserAccount;
 
 import java.util.List;
 
 public interface NotificationService {
-    void createCardSavedNotification(UserAccount actor, Cards card);
+    void createCardSavedNotification(UserAccount actor, Card card);
 
     List<Notification> getUserNotifications(Long userId);
 

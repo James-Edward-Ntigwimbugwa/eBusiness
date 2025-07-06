@@ -29,7 +29,7 @@ public class Notification {
 
     @ManyToOne
     @JoinColumn(name = "card_id")
-    private Cards card; // The card that was saved or referenced
+    private Card card; // The card that was saved or referenced
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -43,7 +43,7 @@ public class Notification {
     @Column(name = "message")
     private String message; // Custom message for CARDHOLDER_MESSAGE notifications
 
-    public Notification(UserAccount recipient, UserAccount actor, Cards card, String type) {
+    public Notification(UserAccount recipient, UserAccount actor, Card card, String type) {
         this.recipient = recipient;
         this.actor = actor;
         this.card = card;

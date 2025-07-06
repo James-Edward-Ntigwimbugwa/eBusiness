@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import tz.business.eCard.dtos.CardDto;
 import tz.business.eCard.dtos.GroupCardsDto;
 import tz.business.eCard.dtos.MyCardDto;
-import tz.business.eCard.models.Cards;
+import tz.business.eCard.models.Card;
 import tz.business.eCard.services.CardService;
 import tz.business.eCard.utils.Response;
 
@@ -35,14 +35,14 @@ public class CardController {
     public ResponseEntity<?> getCardsActive(@RequestParam(defaultValue = "25" , value = "page")Integer page,
                                             @RequestParam(defaultValue = "10" , value = "size")Integer size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Cards> allActiveCards = cardService.getAllActiveCards(pageable);
+        Page<Card> allActiveCards = cardService.getAllActiveCards(pageable);
         return ResponseEntity.status(HttpStatus.OK).body(allActiveCards);
     }
 
     @PostMapping(path = "/create")
     public ResponseEntity<?> createCard(@RequestBody CardDto cardDto) {
         log.info("endpoint hit");
-        Response<Cards> response = cardService.createCard(cardDto);
+        Response<Card> response = cardService.createCard(cardDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -54,7 +54,7 @@ public class CardController {
 
     @PutMapping("/update")
     public ResponseEntity<?> updateCard(@RequestBody CardDto cardDto) {
-        Response<Cards> updatedCard = cardService.updateCard(cardDto);
+        Response<Card> updatedCard = cardService.updateCard(cardDto);
         return ResponseEntity.status(HttpStatus.OK).body(updatedCard);
     }
 
@@ -63,39 +63,39 @@ public class CardController {
                                         @RequestParam(defaultValue = "0" , value = "page")Integer page,
                                         @RequestParam(defaultValue = "25" , value = "size") Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        Page<Cards> response = cardService.searchCardsByTitle(keyword , pageRequest);
+        Page<Card> response = cardService.searchCardsByTitle(keyword , pageRequest);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping("/published-active")
     public ResponseEntity<?> publishedActiveCards() {
         Pageable pageable = PageRequest.of(0, 10);
-        Page<Cards> response = cardService.getAllPublicActiveCards(pageable);
+        Page<Card> response = cardService.getAllPublicActiveCards(pageable);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping("/card-by-uuid")
     public ResponseEntity<?> getCardByUuid(@RequestParam String uuid) {
-        Response<Cards> response = cardService.getCardByUuid(uuid);
+        Response<Card> response = cardService.getCardByUuid(uuid);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping("/user-cards")
     public ResponseEntity<?> getUserCardsByUuid(@RequestParam String uuid) {
         Pageable pageable = PageRequest.of(0, 10);
-        Page<Cards> response = cardService.getCardsByUserUuid(uuid, pageable);
+        Page<Card> response = cardService.getCardsByUserUuid(uuid, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PostMapping("/save-card")
     public ResponseEntity<?> saveCard(@RequestBody MyCardDto myCardDto) {
-        Response<Cards> response = cardService.saveCard(myCardDto);
+        Response<Card> response = cardService.saveCard(myCardDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/group-cards")
     public ResponseEntity<?> groupCards(@RequestBody GroupCardsDto groupCardsDto) {
-        Response<Cards> response = cardService.groupCards(groupCardsDto);
+        Response<Card> response = cardService.groupCards(groupCardsDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

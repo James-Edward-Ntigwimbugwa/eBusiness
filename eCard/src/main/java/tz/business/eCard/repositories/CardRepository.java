@@ -6,45 +6,45 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import tz.business.eCard.models.Cards;
+import tz.business.eCard.models.Card;
 import tz.business.eCard.models.UserAccount;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CardRepository extends JpaRepository<Cards, Long> {
+public interface CardRepository extends JpaRepository<Card, Long> {
 
-    Optional<Cards> findFirstByUuid(String uuid);
+    Optional<Card> findFirstByUuid(String uuid);
 
     void deleteCardsByUuidAndUserUuid(String uuid, String userUuid);
 
-    Optional<Cards> findFirstByUserUuidAndDeletedFalse(UserAccount account);
+    Optional<Card> findFirstByUserUuidAndDeletedFalse(UserAccount account);
 
-    Page<Cards> findAllByOrganizationAndDeletedFalse(String orgUuid, Pageable pageable);
+    Page<Card> findAllByOrganizationAndDeletedFalse(String orgUuid, Pageable pageable);
 
-    Page<Cards> findAllByDeletedFalse(Pageable pageable);
+    Page<Card> findAllByDeletedFalse(Pageable pageable);
 
-    Page<Cards> findAllByDeletedFalseAndPublishCardTrue(Pageable pageable);
+    Page<Card> findAllByDeletedFalseAndPublishCardTrue(Pageable pageable);
 
-    Page<Cards> findAllByTitleAndDeletedFalse(String title, Pageable pageable);
+    Page<Card> findAllByTitleAndDeletedFalse(String title, Pageable pageable);
 
-    Optional<Cards> findFirstByUserUuid(UserAccount userUuid);
+    Optional<Card> findFirstByUserUuid(UserAccount userUuid);
 
-    Page<Cards> findAllByActiveTrueAndDeletedFalse(Pageable pageable);
+    Page<Card> findAllByActiveTrueAndDeletedFalse(Pageable pageable);
 
     Long countAllByUserUuid(UserAccount userUuid);
     Long countAllByUserIdAndDeletedFalse(UserAccount userId);
 
     Long countAllByDeletedFalse();
 
-    Page<Cards> findAllByUserUuidAndDeletedFalse(String userUuid, Pageable pageable);
+    Page<Card> findAllByUserUuidAndDeletedFalse(String userUuid, Pageable pageable);
 
     //PROXIMITY SEARCH QUERIES
     /**
      * Find all published cards that have coordinates
      */
-    List<Cards> findByPublishCardTrueAndLatitudeIsNotNullAndLongitudeIsNotNullAndDeletedFalse();
+    List<Card> findByPublishCardTrueAndLatitudeIsNotNullAndLongitudeIsNotNullAndDeletedFalse();
 
     /**
      * Find published cards within a certain distance using native SQL
@@ -65,7 +65,7 @@ public interface CardRepository extends JpaRepository<Cards, Long> {
         ) <= :maxDistanceMeters
         """, nativeQuery = true)
 
-    List<Cards> findNearbyPublishedCards(
+    List<Card> findNearbyPublishedCards(
             @Param("latitude") double latitude,
             @Param("longitude") double longitude,
             @Param("maxDistanceMeters") double maxDistanceMeters
@@ -74,5 +74,5 @@ public interface CardRepository extends JpaRepository<Cards, Long> {
     /**
      * Find published cards by organization with coordinates
      */
-    List<Cards> findByOrganizationAndPublishCardTrueAndLatitudeIsNotNullAndLongitudeIsNotNullAndDeletedFalse(String organization);
+    List<Card> findByOrganizationAndPublishCardTrueAndLatitudeIsNotNullAndLongitudeIsNotNullAndDeletedFalse(String organization);
 }

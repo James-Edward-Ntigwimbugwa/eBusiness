@@ -109,7 +109,7 @@ public class UserAccount extends BaseEntity{
     // For Cards user relationship (if present)
     @OneToMany(mappedBy = "user")
     @JsonManagedReference("cards-user")
-    private List<Cards> userCards;
+    private List<Card> userCards;
 
 
     private boolean accountLocked = false;

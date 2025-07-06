@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import tz.business.eCard.dtos.NotificationDTO;
-import tz.business.eCard.models.Cards;
+import tz.business.eCard.models.Card;
 import tz.business.eCard.models.Notification;
 import tz.business.eCard.models.SavedCard;
 import tz.business.eCard.models.UserAccount;
@@ -17,8 +17,6 @@ import tz.business.eCard.utils.userExtractor.LoggedUser;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-import static tz.business.eCard.utils.ResponseCode.UNAUTHORIZED;
 
 @Service
 @Slf4j
@@ -39,7 +37,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Autowired
     private LoggedUser loggedUser;
 
-    public void createCardSavedNotification(UserAccount actor, Cards card) {
+    public void createCardSavedNotification(UserAccount actor, Card card) {
         UserAccount cardHolder = card.getUser();
         Notification notification = new Notification(cardHolder, actor, card, "CARD_SAVED");
         Notification savedNotification = notificationRepository.save(notification);
@@ -73,14 +71,14 @@ public class NotificationServiceImpl implements NotificationService {
         try {
             UserAccount user = loggedUser.getUserAccount();
             log.info("user {}", user);
-            Cards cards = new Cards();
+            Card cards = new Card();
 
             if (user == null) {
                 log.info("Unauthorized ======>");
             }
 
             List<SavedCard> savedCards = savedCardRepository.findByCardId(cardId);
-            Cards card = cardRepository.findById(cardId)
+            Card card = cardRepository.findById(cardId)
                     .orElseThrow(() -> new RuntimeException("Card not found"));
             UserAccount cardHolder = card.getUser();
 

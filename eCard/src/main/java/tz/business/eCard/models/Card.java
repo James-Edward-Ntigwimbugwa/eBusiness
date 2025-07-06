@@ -21,7 +21,7 @@ import org.hibernate.annotations.Where;
 @Where(clause = "deleted = false")
 @SQLDelete(sql = "UPDATE cards SET deleted = true WHERE id = ?" , check = ResultCheckStyle.COUNT )
 
-public class Cards extends BaseEntity {
+public class Card extends BaseEntity {
     @Column(name = "title" , nullable = false)
     private String title;
 

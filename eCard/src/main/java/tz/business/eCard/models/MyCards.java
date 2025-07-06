@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Where;
 
-import javax.smartcardio.Card;
 import java.io.Serializable;
 
 @Entity
@@ -25,7 +24,7 @@ public class MyCards extends BaseEntity implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "card_id" , referencedColumnName = "id")
-    private Cards card;
+    private Card card;
 
     @ManyToOne
     @JoinColumn(name = "user_id" , referencedColumnName = "id")
