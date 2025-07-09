@@ -40,7 +40,7 @@ public class InitRunner implements ApplicationRunner{
                 account.setJobTitle("Developer");
                 account.setPassword("admin@ntigwimnugwa2001!");
                 account.setPhoneNumber("255712121212");
-                account.setEmail("admin.go.tz@ecard.co.tz");
+                account.setEmail("admin.api.tz@ecard.co.tz");
                 accountRepository.save(account);
             }
 
