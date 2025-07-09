@@ -12,7 +12,7 @@ import tz.business.eCard.dtos.GroupCardsDto;
 import tz.business.eCard.dtos.MyCardDto;
 import tz.business.eCard.models.CardGroup;
 import tz.business.eCard.models.Card;
-import tz.business.eCard.models.UserAccount;
+import tz.business.eCard.models.Account;
 import tz.business.eCard.repositories.CardGroupRepository;
 import tz.business.eCard.repositories.CardRepository;
 import tz.business.eCard.services.CardService;
@@ -44,7 +44,7 @@ public class CardServiceImpl implements CardService {
     @Override
     public Response<Card> createCard(CardDto cardDto) {
         try {
-            UserAccount user = loggedUser.getUserAccount();
+            Account user = loggedUser.getUserAccount();
             log.info("user {}", user);
             Card cards = new Card();
 
@@ -130,7 +130,7 @@ public class CardServiceImpl implements CardService {
     @Override
     public Response<Card> updateCard(CardDto cardDto) {
         try {
-            UserAccount user = loggedUser.getUserAccount();
+            Account user = loggedUser.getUserAccount();
 
             if (cardDto.getTitle() == null || cardDto.getTitle().isEmpty()) {
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Title is null");
@@ -168,7 +168,7 @@ public class CardServiceImpl implements CardService {
     @Transactional
     public Response<Boolean> deleteCard(String cardUuid) {
         try {
-            UserAccount user = loggedUser.getUserAccount();
+            Account user = loggedUser.getUserAccount();
             if (user == null) {
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Unauthorized access");
             }
@@ -199,7 +199,7 @@ public class CardServiceImpl implements CardService {
     @Override
     public Page<CardDto> getAllCards(Pageable pageable) {
         try {
-            UserAccount user = loggedUser.getUserAccount();
+            Account user = loggedUser.getUserAccount();
             if (user == null) {
                 return new PageImpl<>(Collections.emptyList());
             }
@@ -249,7 +249,7 @@ public class CardServiceImpl implements CardService {
     @Override
     public Page<Card> searchCardsByTitle(String title, Pageable pageable) {
         try {
-            UserAccount user = loggedUser.getUserAccount();
+            Account user = loggedUser.getUserAccount();
             if (user == null) {
                 return null;
             }
@@ -264,7 +264,7 @@ public class CardServiceImpl implements CardService {
     public Page<Card> getAllActiveCards(Pageable pageable) {
 
         try {
-            UserAccount user = loggedUser.getUserAccount();
+            Account user = loggedUser.getUserAccount();
             if (user == null) {
                 return new PageImpl<>(Collections.emptyList());
             }
@@ -278,7 +278,7 @@ public class CardServiceImpl implements CardService {
     @Override
     public Page<Card> getAllPublicActiveCards(Pageable pageable) {
         try {
-            UserAccount user = loggedUser.getUserAccount();
+            Account user = loggedUser.getUserAccount();
             if (user == null) {
                 return new PageImpl<>(Collections.emptyList());
             }
@@ -292,7 +292,7 @@ public class CardServiceImpl implements CardService {
     @Override
     public Response<Card> getCardByUuid(String uuid) {
         try {
-            UserAccount user = loggedUser.getUserAccount();
+            Account user = loggedUser.getUserAccount();
             if (user == null) {
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Unauthorized access");
             }
@@ -306,7 +306,7 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public Page<Card> getCardsByUserUuid(String uuid, Pageable pageable) {
-        UserAccount user = loggedUser.getUserAccount();
+        Account user = loggedUser.getUserAccount();
         if (user == null) {
             return null;
         }
@@ -316,7 +316,7 @@ public class CardServiceImpl implements CardService {
     @Override
     public Response<Card> saveCard(MyCardDto myCardDto) {
         try {
-            UserAccount user = loggedUser.getUserAccount();
+            Account user = loggedUser.getUserAccount();
             if (user == null) {
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Unauthorized access");
             }

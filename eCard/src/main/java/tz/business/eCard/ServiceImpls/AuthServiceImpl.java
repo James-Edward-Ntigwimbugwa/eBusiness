@@ -10,8 +10,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import tz.business.eCard.dtos.*;
 import tz.business.eCard.jwt.JWTutils;
-import tz.business.eCard.models.UserAccount;
-import tz.business.eCard.repositories.UserAccountRepository;
+import tz.business.eCard.models.Account;
+import tz.business.eCard.repositories.AccountRepository;
 import tz.business.eCard.services.AuthService;
 import tz.business.eCard.services.BulkSmsIntegration;
 import tz.business.eCard.utils.Response;
@@ -39,7 +39,7 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private BulkSmsIntegration bulkSmsIntegration;
     @Autowired
-    private UserAccountRepository userAccountRepository;
+    private AccountRepository accountRepository;
     @Autowired
     private LoggedUser loggedUser;
 
@@ -53,13 +53,13 @@ public class AuthServiceImpl implements AuthService {
             String jwtToken = jwtUtils.generateJwtToken(authentication);
             String refreshToken = UUID.randomUUID().toString();
 
-            Optional<UserAccount> accountOptional = userAccountRepository.findFirstByUserName(loginDto.getUsername());
+            Optional<Account> accountOptional = accountRepository.findFirstByUserName(loginDto.getUsername());
 
             if(accountOptional.isEmpty())
                 return new Response<>(true, ResponseCode.NOT_FOUND,"Invalid login credentials");
 
-            UserAccount userAccount = accountOptional.get();
-            if(!userAccount.getActive()) {
+            Account account = accountOptional.get();
+            if(!account.getActive()) {
                 log.info("ACCOUNT NOT ACTIVATED");
                 return new Response<>(true, ResponseCode.BAD_REQUEST, "Please activate your account first");
             }
@@ -74,89 +74,89 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Response<UserAccount> register(UserAccountDto userAccountDto) {
+    public Response<Account> register(AccountDto accountDto) {
         try {
-            if(userAccountDto.getFirstName() == null || userAccountDto.getLastName()==null){
+            if(accountDto.getFirstName() == null || accountDto.getLastName()==null){
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Invalid first name or last name");
             }
 
-            if(userAccountDto.getFirstName().isEmpty() || userAccountDto.getLastName().isEmpty()){
+            if(accountDto.getFirstName().isEmpty() || accountDto.getLastName().isEmpty()){
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "First name and last name are required");
             }
 
-            if(userAccountDto.getPassword().isBlank()){
+            if(accountDto.getPassword().isBlank()){
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Password is required");
             }
 
-            if(userAccountDto.getPhoneNumber()== null || userAccountDto.getPhoneNumber().isEmpty()){
+            if(accountDto.getPhoneNumber()== null || accountDto.getPhoneNumber().isEmpty()){
                 return new Response<>(true , ResponseCode.NULL_ARGUMENT, "Phone number is required");
             }
 
-            if(!isValidEmail(userAccountDto.getEmail())){
+            if(!isValidEmail(accountDto.getEmail())){
                 return new Response<>(true, ResponseCode.BAD_REQUEST, "Invalid email");
             }
-            if(isValidPhoneNumber(userAccountDto.getPhoneNumber())){
+            if(isValidPhoneNumber(accountDto.getPhoneNumber())){
                 return new Response<>(true , ResponseCode.BAD_REQUEST,"Invalid phone number");
             }
 
-            if(userAccountDto.getJobTitle()== null || userAccountDto.getJobTitle().isEmpty()){
+            if(accountDto.getJobTitle()== null || accountDto.getJobTitle().isEmpty()){
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Job title is required");
             }
 
-            if(userAccountDto.getCompanyTitle()==null||userAccountDto.getCompanyTitle().isEmpty()){
+            if(accountDto.getCompanyTitle()==null|| accountDto.getCompanyTitle().isEmpty()){
                 return  new Response<>(true, ResponseCode.NULL_ARGUMENT, "Company title is required");
             }
 
-            Optional<UserAccount> userAccountOptional = userAccountRepository.findFirstByPhoneNumber(userAccountDto.getPhoneNumber());
+            Optional<Account> userAccountOptional = accountRepository.findFirstByPhoneNumber(accountDto.getPhoneNumber());
             if(userAccountOptional.isPresent()){
                 return  new Response<>(true,ResponseCode.DUPLICATE_KEY , "Account with this phone number already exist");
             }
-            Optional<UserAccount> userAccountOptional1 = userAccountRepository.findFirstByEmail(userAccountDto.getEmail());
+            Optional<Account> userAccountOptional1 = accountRepository.findFirstByEmail(accountDto.getEmail());
             if(userAccountOptional1.isPresent()){
                 return new Response<>(true, ResponseCode.DUPLICATE_KEY, "Account with this email already exist");
             }
-//        Optional<UserAccount> userAccountOptional2 = userAccountRepository.findFirstByUsername(userAccountDto.getFirstName() + " " + userAccountDto.getMiddleName() + " " + userAccountDto.getLastName());
+//        Optional<UserAccount> userAccountOptional2 = userAccountRepository.findFirstByUsername(accountDto.getFirstName() + " " + accountDto.getMiddleName() + " " + accountDto.getLastName());
 //        if(userAccountOptional2.isPresent()){
 //            return new Response<>(true, ResponseCode.DUPLICATE_KEY, "Account with username already exist");
 //        }
 
-            UserAccount account = new UserAccount();
+            Account account = new Account();
             Random rand = new SecureRandom();
             int nextInt = rand.nextInt(100001 , 999999);
-            if(userAccountDto.getUserRole()==null || userAccountDto.getUserRole().isEmpty()){
+            if(accountDto.getUserRole()==null || accountDto.getUserRole().isEmpty()){
                 account.setUserType(UserType.CUSTOMER.toString());
             }
             else{
-                account.setUserType(userAccountDto.getUserRole());
+                account.setUserType(accountDto.getUserRole());
             }
 
             account.setEnabled(false);
             account.getUuid();
-            account.setFirstName(userAccountDto.getFirstName());
-            account.setLastName(userAccountDto.getLastName());
-            account.setFullName(userAccountDto.getFirstName() + " " +userAccountDto.getMiddleName() +" " + userAccountDto.getLastName());
-            account.setPhoneNumber(userAccountDto.getPhoneNumber());
-            account.setUserName(userAccountDto.getUsername());
-            account.setPassword(passwordEncoder.encode(userAccountDto.getPassword()));
-            account.setEmail(userAccountDto.getEmail());
-            account.setSecondName(userAccountDto.getMiddleName());
-            account.setJobTitle(userAccountDto.getJobTitle());
-            account.setCompanyName(userAccountDto.getCompanyTitle());
+            account.setFirstName(accountDto.getFirstName());
+            account.setLastName(accountDto.getLastName());
+            account.setFullName(accountDto.getFirstName() + " " + accountDto.getMiddleName() +" " + accountDto.getLastName());
+            account.setPhoneNumber(accountDto.getPhoneNumber());
+            account.setUserName(accountDto.getUsername());
+            account.setPassword(passwordEncoder.encode(accountDto.getPassword()));
+            account.setEmail(accountDto.getEmail());
+            account.setSecondName(accountDto.getMiddleName());
+            account.setJobTitle(accountDto.getJobTitle());
+            account.setCompanyName(accountDto.getCompanyTitle());
             account.setActive(false);
-            account.setBiography(userAccountDto.getBiography());
+            account.setBiography(accountDto.getBiography());
             account.setPublishBio(false);
             account.setOneTimePassword(String.valueOf(nextInt));
 
             MessageRequestDto messageRequestDto= new MessageRequestDto();
             messageRequestDto.setMessage("Your verification code is " + nextInt + " \n Use the code to activate your account");
             messageRequestDto.setSenderId("15200");
-//            messageRequestDto.setReceiversPhoneNumber(userAccountDto.getPhoneNumber());
+//            messageRequestDto.setReceiversPhoneNumber(accountDto.getPhoneNumber());
             messageRequestDto.setReceiversPhoneNumber("+255716521848");
             messageRequestDto.setDateOTPSent(LocalDate.now().toString());
             Response<MessageResponseDto> responseMessage =  bulkSmsIntegration.sendMessage(messageRequestDto);
 
             account.setLastOtpSent(LocalDateTime.now());
-            userAccountRepository.save(account);
+            accountRepository.save(account);
             return new Response<>(false, ResponseCode.SUCCESS,"User registered successfully", account);
         }catch (Exception e){
             log.error(e.getMessage());
@@ -180,7 +180,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Response<LoginResponseDto> revokeToken(String refreshToken) {
         try {
-            Optional<UserAccount> userAccountOptional = userAccountRepository.findFirstByRefreshToken(refreshToken);
+            Optional<Account> userAccountOptional = accountRepository.findFirstByRefreshToken(refreshToken);
             if(userAccountOptional.isPresent()){
                 return getLoginResponse(userAccountOptional, "" , "");
             }
@@ -197,9 +197,9 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Response<UserAccount> getLoggedUser() {
+    public Response<Account> getLoggedUser() {
         try{
-            UserAccount user = loggedUser.getUserAccount();
+            Account user = loggedUser.getUserAccount();
             if(user == null){
                 return new Response<>(true,ResponseCode.UNAUTHORIZED, "Unauthorized" );
             }
@@ -212,8 +212,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Response<UserAccount> updatePassword(ChangePasswordDto changePasswordDto) {
-        UserAccount user =  loggedUser.getUserAccount();
+    public Response<Account> updatePassword(ChangePasswordDto changePasswordDto) {
+        Account user =  loggedUser.getUserAccount();
         if(user == null){
             return new Response<>(true,ResponseCode.UNAUTHORIZED, "Unauthorized");
         } else{
@@ -229,7 +229,7 @@ public class AuthServiceImpl implements AuthService {
                 }
 
                 user.setPassword(passwordEncoder.encode(changePasswordDto.getNewPassword()));
-                UserAccount savedUser = userAccountRepository.save(user);
+                Account savedUser = accountRepository.save(user);
                 return new Response<>(true,ResponseCode.SUCCESS,"Password updated successfully");
 
             }catch (Exception e){
@@ -242,11 +242,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Response<String> activateAccount(String code) {
        try {
-           Optional<UserAccount>  userAccountOptional= userAccountRepository.findByOneTimePassword(code);
+           Optional<Account>  userAccountOptional= accountRepository.findByOneTimePassword(code);
            if(userAccountOptional.isPresent()){
-               UserAccount userAccount = userAccountOptional.get();
-               userAccount.setActive(true);
-               userAccountRepository.save(userAccount);
+               Account account = userAccountOptional.get();
+               account.setActive(true);
+               accountRepository.save(account);
                return new Response<>(false, ResponseCode.SUCCESS, "User activated successfully");
            }else {
                return new Response<>(true, ResponseCode.UNAUTHORIZED, "No user with this " + code +" exists");
@@ -260,13 +260,13 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Response<String> requestOTP(String phoneNumber) {
         try {
-            Optional<UserAccount>  userAccountOptional = userAccountRepository.findFirstByPhoneNumber(phoneNumber);
+            Optional<Account>  userAccountOptional = accountRepository.findFirstByPhoneNumber(phoneNumber);
             if(userAccountOptional.isPresent()){
-                UserAccount userAccount = userAccountOptional.get();
+                Account account = userAccountOptional.get();
                 Random random = new SecureRandom();
                 int nextInt = random.nextInt(100001 , 999999);
-                userAccount.setOneTimePassword(String.valueOf(nextInt));
-                userAccountRepository.save(userAccount);
+                account.setOneTimePassword(String.valueOf(nextInt));
+                accountRepository.save(account);
                 return new Response<>(true, ResponseCode.SUCCESS, "OTP verified successfully");
             }
             return new Response<>(false, ResponseCode.BAD_REQUEST, "No user with this " + phoneNumber +" exists");
@@ -278,33 +278,33 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Response<UserAccount> loginByEmail(String email) {
+    public Response<Account> loginByEmail(String email) {
         return null;
     }
 
-    private Response<LoginResponseDto> getLoginResponse(Optional<UserAccount> userAccountOptional, String jwtToken, String refreshToken) {
+    private Response<LoginResponseDto> getLoginResponse(Optional<Account> userAccountOptional, String jwtToken, String refreshToken) {
         if (userAccountOptional.isPresent()) {
-            UserAccount userAccount = userAccountOptional.get();
-            userAccount.setRefreshToken(refreshToken);
-            userAccount.setLastLoginTime(LocalDateTime.now());
-            userAccount.setRefreshTokenTime(LocalDateTime.now());
-            userAccountRepository.save(userAccount);
+            Account account = userAccountOptional.get();
+            account.setRefreshToken(refreshToken);
+            account.setLastLoginTime(LocalDateTime.now());
+            account.setRefreshTokenTime(LocalDateTime.now());
+            accountRepository.save(account);
 
             LoginResponseDto loginResponseDto = new LoginResponseDto(
                     jwtToken,
-                    userAccount.getId(),
-                    userAccount.getEmail(),
-                    userAccount.getUuid(),
+                    account.getId(),
+                    account.getEmail(),
+                    account.getUuid(),
                     refreshToken,
                     "Bearer",
-                    userAccount.getUserName(),
-                    userAccount.getUserType(),
-                    userAccount.getFirstName(),
-                    userAccount.getLastName(),
-                    userAccount.getPhoneNumber(),
-                    userAccount.getJobTitle(),
-                    userAccount.getCompanyName(),
-                    userAccount.getLastLoginTime()
+                    account.getUserName(),
+                    account.getUserType(),
+                    account.getFirstName(),
+                    account.getLastName(),
+                    account.getPhoneNumber(),
+                    account.getJobTitle(),
+                    account.getCompanyName(),
+                    account.getLastLoginTime()
             );
 
             return new Response<>(false, ResponseCode.SUCCESS, loginResponseDto, null, "Login successful");
@@ -321,13 +321,13 @@ public class AuthServiceImpl implements AuthService {
             String jwtToken = jwtUtils.generateJwtToken(authentication);
             String newRefreshToken = UUID.randomUUID().toString();
 
-            Optional<UserAccount> accountOptional = userAccountRepository.findFirstByUserName(loginDto.getUsername());
+            Optional<Account> accountOptional = accountRepository.findFirstByUserName(loginDto.getUsername());
 
             if(accountOptional.isEmpty())
                 return new Response<>(true, ResponseCode.NOT_FOUND,"Invalid user credentials");
 
-            UserAccount userAccount = accountOptional.get();
-            if(!userAccount.getActive()) {
+            Account account = accountOptional.get();
+            if(!account.getActive()) {
                 log.info("ACCOUNT NOT ACTIVATED");
                 return new Response<>(true, ResponseCode.BAD_REQUEST, "Please activate your account first");
             }

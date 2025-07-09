@@ -8,7 +8,7 @@ import org.locationtech.jts.geom.PrecisionModel;
 import tz.business.eCard.dtos.NearbyCardInfo;
 import tz.business.eCard.models.Card;
 import tz.business.eCard.models.DeviceProximity;
-import tz.business.eCard.models.UserAccount;
+import tz.business.eCard.models.Account;
 import tz.business.eCard.repositories.CardRepository;
 import tz.business.eCard.repositories.DeviceProximityRepository;
 import tz.business.eCard.services.DeviceProximityService;
@@ -98,7 +98,7 @@ public class DeviceProximityServiceImp implements DeviceProximityService {
     @Override
     public List<DeviceProximity> findNearbyDevices(UUID userId, double latitude, double longitude) {
         try {
-            UserAccount user = loggedUser.getUserAccount();
+            Account user = loggedUser.getUserAccount();
             if (user == null) {
                 log.error("Unauthorized access attempt");
                 return new ArrayList<>();
@@ -143,7 +143,7 @@ public class DeviceProximityServiceImp implements DeviceProximityService {
      */
     public List<NearbyCardInfo> findNearbyCardsWithPathfinding(UUID userId, double latitude, double longitude) {
         try {
-            UserAccount user = loggedUser.getUserAccount();
+            Account user = loggedUser.getUserAccount();
             if (user == null) {
                 log.error("Unauthorized access attempt");
                 return new ArrayList<>();

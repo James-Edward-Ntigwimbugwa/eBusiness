@@ -28,7 +28,7 @@ public class CardRateStats  {
 
     @OneToOne
     @JoinColumn(name = "user_uuid")
-    private UserAccount account;
+    private Account account;
 
     @Column(name = "uuid")
     private UUID uuid;

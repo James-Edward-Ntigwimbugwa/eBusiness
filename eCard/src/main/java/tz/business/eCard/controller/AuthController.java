@@ -5,11 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tz.business.eCard.dtos.AccountDto;
 import tz.business.eCard.dtos.ChangePasswordDto;
 import tz.business.eCard.dtos.LoginDto;
 import tz.business.eCard.dtos.LoginResponseDto;
-import tz.business.eCard.dtos.UserAccountDto;
-import tz.business.eCard.models.UserAccount;
+import tz.business.eCard.models.Account;
 import tz.business.eCard.services.AuthService;
 import tz.business.eCard.utils.Response;
 
@@ -30,20 +30,20 @@ AuthController {
     }
 
     @PostMapping(path = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> register (@RequestBody UserAccountDto userAccountDto) {
-        Response<?> stringResponse = authService.register(userAccountDto);
+    public ResponseEntity<?> register (@RequestBody AccountDto accountDto) {
+        Response<?> stringResponse = authService.register(accountDto);
         return ResponseEntity.ok().body(stringResponse);
     }
 
     @GetMapping(path="/me")
     public ResponseEntity<?> getProfile(){
-        Response<UserAccount> response = authService.getLoggedUser();
+        Response<Account> response = authService.getLoggedUser();
         return  ResponseEntity.ok().body(response);
     }
 
     @PostMapping("/update-password")
     public ResponseEntity<?> updatePassword(@RequestBody ChangePasswordDto changePasswordDto) {
-        Response<UserAccount> response = authService.updatePassword(changePasswordDto);
+        Response<Account> response = authService.updatePassword(changePasswordDto);
         return ResponseEntity.ok().body(response);
     }
 

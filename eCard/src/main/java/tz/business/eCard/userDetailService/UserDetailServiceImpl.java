@@ -6,23 +6,23 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-import tz.business.eCard.models.UserAccount;
-import tz.business.eCard.repositories.UserAccountRepository;
+import tz.business.eCard.models.Account;
+import tz.business.eCard.repositories.AccountRepository;
 
 @Component
 @Slf4j
 public class UserDetailServiceImpl implements UserDetailsService {
     @Autowired
-    private final UserAccountRepository userAccountRepository;
+    private final AccountRepository accountRepository;
 
     @Autowired
-    public UserDetailServiceImpl(UserAccountRepository userAccountRepository) {
-        this.userAccountRepository = userAccountRepository;
+    public UserDetailServiceImpl(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
     }
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserAccount userAccount = userAccountRepository.findFirstByUserName(username)
+        Account account = accountRepository.findFirstByUserName(username)
                 .orElseThrow(()->new UsernameNotFoundException("Username not found"));
-        return UserDetailsImpl.build(userAccount);
+        return UserDetailsImpl.build(account);
     }
 }

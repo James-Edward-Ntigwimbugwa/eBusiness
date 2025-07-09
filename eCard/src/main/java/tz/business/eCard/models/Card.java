@@ -82,7 +82,7 @@ public class Card extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_uuid", referencedColumnName = "uuid")
     @JsonBackReference("cards-user") // Unique name
-    private UserAccount user;
+    private Account user;
 
     @ManyToOne
     @JoinColumn(name = "group_uuid", referencedColumnName = "id")

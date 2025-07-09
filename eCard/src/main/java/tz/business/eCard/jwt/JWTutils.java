@@ -15,7 +15,7 @@ import java.util.Base64;
 import java.util.Date;
 @Component
 public class JWTutils {
-    @Value("${drppt.co.tz.jwtkey}")
+    @Value("${tz.busuness.ecard.jwt-key}")
     private String jwtKey;
 
     Logger log = LoggerFactory.getLogger(JWTutils.class);

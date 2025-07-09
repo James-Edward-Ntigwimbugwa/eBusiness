@@ -28,6 +28,6 @@ public class MyCards extends BaseEntity implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "user_id" , referencedColumnName = "id")
-    private UserAccount userId;
+    private Account userId;
 
 }

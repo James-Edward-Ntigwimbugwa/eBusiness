@@ -8,10 +8,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import tz.business.eCard.dtos.GroupDto;
 import tz.business.eCard.models.CardGroup;
-import tz.business.eCard.models.UserAccount;
+import tz.business.eCard.models.Account;
+import tz.business.eCard.repositories.AccountRepository;
 import tz.business.eCard.repositories.CardGroupRepository;
 import tz.business.eCard.repositories.GroupRepository;
-import tz.business.eCard.repositories.UserAccountRepository;
 import tz.business.eCard.services.GroupService;
 import tz.business.eCard.utils.Response;
 import tz.business.eCard.utils.ResponseCode;
@@ -30,12 +30,12 @@ public class GroupServiceImpl implements GroupService {
     @Autowired
     private GroupRepository groupRepository;
     @Autowired
-    private UserAccountRepository userAccountRepository;
+    private AccountRepository accountRepository;
 
     @Override
     public Response<CardGroup> createUpdateGroup(GroupDto groupDto) {
         try {
-            UserAccount user = loggedUser.getUserAccount();
+            Account user = loggedUser.getUserAccount();
             if(user == null) {
                 return new Response<>(true , ResponseCode.UNAUTHORIZED , "Unauthorized access");
             }
@@ -68,7 +68,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Response<CardGroup> deleteGroup(String groupUuid) {
         try{
-            UserAccount user = loggedUser.getUserAccount();
+            Account user = loggedUser.getUserAccount();
             if(user == null) {
                 return new Response<>(true , ResponseCode.UNAUTHORIZED , "Unauthorized access");
             }
@@ -91,7 +91,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Response<CardGroup> getGroup(String groupUuid) {
         try {
-            UserAccount user = loggedUser.getUserAccount();
+            Account user = loggedUser.getUserAccount();
             if(user == null) {
                 return new Response<>(true , ResponseCode.UNAUTHORIZED , "Unauthorized access");
             }
@@ -109,11 +109,11 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Page<CardGroup> getAllUserGroups(Pageable pageable) {
         try {
-            UserAccount user = loggedUser.getUserAccount();
-            Optional<UserAccount> owner =  userAccountRepository.findFirstByUuid(user.getUuid());
+            Account user = loggedUser.getUserAccount();
+            Optional<Account> owner =  accountRepository.findFirstByUuid(user.getUuid());
             if(owner.isPresent()) {
-                UserAccount userAccount = owner.get();
-                Page<CardGroup> allUserGroups = cardGroupRepository.getAllByOwnerOrderByGroupNameAsc(userAccount,pageable);
+                Account account = owner.get();
+                Page<CardGroup> allUserGroups = cardGroupRepository.getAllByOwnerOrderByGroupNameAsc(account,pageable);
                 if (allUserGroups.getTotalElements() > 0) {
                     return new PageImpl<>(allUserGroups.getContent());
                 }else{
@@ -129,7 +129,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public List<CardGroup> getGroupCards(String groupUuid) {
         try {
-            UserAccount user = loggedUser.getUserAccount();
+            Account user = loggedUser.getUserAccount();
             if(user == null) {
                 return null;
             }

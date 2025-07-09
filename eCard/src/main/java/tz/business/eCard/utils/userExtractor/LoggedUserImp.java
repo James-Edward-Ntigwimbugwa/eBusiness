@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import tz.business.eCard.models.UserAccount;
-import tz.business.eCard.repositories.UserAccountRepository;
+import tz.business.eCard.models.Account;
+import tz.business.eCard.repositories.AccountRepository;
 
 import java.util.HashMap;
 
@@ -22,7 +22,7 @@ public class LoggedUserImp implements LoggedUser {
 
     private static  final Logger logger = LoggerFactory.getLogger(LoggedUserImp.class);
     @Autowired
-    private UserAccountRepository userAccountRepository;
+    private AccountRepository accountRepository;
     @Autowired
     private ObjectMapper objectMapper;
     public LoggedUserImp(){
@@ -74,10 +74,10 @@ public class LoggedUserImp implements LoggedUser {
     }
 
     @Override
-    public UserAccount getUserAccount() {
+    public Account getUserAccount() {
         UserInfo userInfo = getInfo();
         if(userInfo != null){
-            return userAccountRepository.findById(Long.valueOf(userInfo.getId())).orElse(null);
+            return accountRepository.findById(Long.valueOf(userInfo.getId())).orElse(null);
         }
         return null;
     }

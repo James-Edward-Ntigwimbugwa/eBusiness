@@ -21,11 +21,11 @@ public class Notification {
 
     @ManyToOne
     @JoinColumn(name = "recipient_id")
-    private UserAccount recipient; // The card holder who receives the notification
+    private Account recipient; // The card holder who receives the notification
 
     @ManyToOne
     @JoinColumn(name = "actor_id")
-    private UserAccount actor; // The user who saved the card or sent the notification
+    private Account actor; // The user who saved the card or sent the notification
 
     @ManyToOne
     @JoinColumn(name = "card_id")
@@ -43,7 +43,7 @@ public class Notification {
     @Column(name = "message")
     private String message; // Custom message for CARDHOLDER_MESSAGE notifications
 
-    public Notification(UserAccount recipient, UserAccount actor, Card card, String type) {
+    public Notification(Account recipient, Account actor, Card card, String type) {
         this.recipient = recipient;
         this.actor = actor;
         this.card = card;

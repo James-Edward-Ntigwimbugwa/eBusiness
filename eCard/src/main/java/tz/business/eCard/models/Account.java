@@ -23,7 +23,7 @@ import java.util.List;
 @Table(name = "user_account", indexes = @Index(name = "idx_lastname_firstname" , columnList = "lastName , firstName"))
 @SQLDelete(sql = "UPDATE user_account SET deleted = true WHERE id=?" , check = ResultCheckStyle.COUNT)
 @Where(clause = "deleted = false")
-public class UserAccount extends BaseEntity{
+public class Account extends BaseEntity{
 
     @Column(name = "first_name" , nullable = false)
     private String firstName;

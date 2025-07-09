@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tz.business.eCard.dtos.DashboardDto;
-import tz.business.eCard.models.UserAccount;
+import tz.business.eCard.models.Account;
 import tz.business.eCard.repositories.CardRepository;
 import tz.business.eCard.repositories.MyCardRepository;
 import tz.business.eCard.services.DashboardService;
@@ -27,7 +27,7 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public Response<DashboardDto> getDashboardData() {
         try {
-            UserAccount user = loggedUser.getUserAccount();
+            Account user = loggedUser.getUserAccount();
             if (user == null) {
                 return new Response<>(true,ResponseCode.UNAUTHORIZED, "Unauthorized access");
             }

@@ -23,7 +23,7 @@ public class CardGroup extends BaseEntity implements Serializable {
     @ManyToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     @JsonBackReference("card-group-owner") // Unique name
-    private UserAccount owner;
+    private Account owner;
 
     @OneToMany(mappedBy = "group")
     @JsonManagedReference("cards-group")

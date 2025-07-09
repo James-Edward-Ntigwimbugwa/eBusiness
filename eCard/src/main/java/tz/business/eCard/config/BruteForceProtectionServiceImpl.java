@@ -2,8 +2,8 @@ package tz.business.eCard.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tz.business.eCard.models.UserAccount;
-import tz.business.eCard.repositories.UserAccountRepository;
+import tz.business.eCard.models.Account;
+import tz.business.eCard.repositories.AccountRepository;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,44 +18,44 @@ public class BruteForceProtectionServiceImpl implements BruteForceProtectionServ
         cache = new ConcurrentHashMap<>(maxCacheLimit);
     }
     @Autowired
-    private UserAccountRepository userAccountRepository;
+    private AccountRepository accountRepository;
 
     @Override
     public void registerLoginFailure(String username) {
-        Optional<UserAccount> optionalUserAccount = userAccountRepository.findFirstByUserName(username);
+        Optional<Account> optionalUserAccount = accountRepository.findFirstByUserName(username);
         if (optionalUserAccount.isPresent()) {
-            UserAccount userAccount = optionalUserAccount.get();
-            int loginAttempts = userAccount.getLoginAttempts();
+            Account account = optionalUserAccount.get();
+            int loginAttempts = account.getLoginAttempts();
             if(loginAttempts >= maxLogins) {
-                userAccount.setAccountLocked(true);
-                userAccount.setLastLoginTime(LocalDateTime.now());
-                userAccountRepository.save(userAccount);
+                account.setAccountLocked(true);
+                account.setLastLoginTime(LocalDateTime.now());
+                accountRepository.save(account);
             } else{
-                userAccount.setAccountLocked(false);
-                userAccount.setLastLoginTime(LocalDateTime.now());
-                userAccount.setLoginAttempts(loginAttempts + 1);
-                userAccountRepository.save(userAccount);
+                account.setAccountLocked(false);
+                account.setLastLoginTime(LocalDateTime.now());
+                account.setLoginAttempts(loginAttempts + 1);
+                accountRepository.save(account);
             }
         }
     }
 
     @Override
     public void resetBruteForceCounter(String username) {
-        Optional<UserAccount> userAccountOptional = userAccountRepository.findFirstByUserName(username);
+        Optional<Account> userAccountOptional = accountRepository.findFirstByUserName(username);
         if (userAccountOptional.isPresent()) {
-            UserAccount userAccount = userAccountOptional.get();
-            userAccount.setAccountLocked(false);
-            userAccount.setLoginAttempts(0);
-            userAccountRepository.save(userAccount);
+            Account account = userAccountOptional.get();
+            account.setAccountLocked(false);
+            account.setLoginAttempts(0);
+            accountRepository.save(account);
         }
     }
 
     @Override
     public boolean isBruteForceAttack(String username) {
-        Optional<UserAccount> userAccountOptional = userAccountRepository.findFirstByUserName(username);
+        Optional<Account> userAccountOptional = accountRepository.findFirstByUserName(username);
         if(userAccountOptional.isPresent()) {
-            UserAccount userAccount = userAccountOptional.get();
-            return userAccount.getLoginAttempts() >= maxLogins;
+            Account account = userAccountOptional.get();
+            return account.getLoginAttempts() >= maxLogins;
         }
         return false;
     }

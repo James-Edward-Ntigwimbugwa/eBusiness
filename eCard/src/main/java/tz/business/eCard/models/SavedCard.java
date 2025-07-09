@@ -21,7 +21,7 @@ public class SavedCard {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private UserAccount user; // The user who saved the card
+    private Account user; // The user who saved the card
 
     @ManyToOne
     @JoinColumn(name = "card_id")
@@ -30,7 +30,7 @@ public class SavedCard {
     @Column(name = "saved_date")
     private LocalDateTime savedDate;
 
-    public SavedCard(UserAccount user, Card card) {
+    public SavedCard(Account user, Card card) {
         this.user = user;
         this.card = card;
     }

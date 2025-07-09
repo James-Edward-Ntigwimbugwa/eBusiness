@@ -8,7 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import tz.business.eCard.models.Role;
-import tz.business.eCard.models.UserAccount;
+import tz.business.eCard.models.Account;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -48,17 +48,17 @@ public class UserDetailsImpl implements UserDetails {
         this.authorities = authorities;
     }
 
-    public static UserDetailsImpl build(UserAccount userAccount){
-        List<GrantedAuthority> grantedAuthorities = Collections.singletonList(new SimpleGrantedAuthority(userAccount.getUserType()));
+    public static UserDetailsImpl build(Account account){
+        List<GrantedAuthority> grantedAuthorities = Collections.singletonList(new SimpleGrantedAuthority(account.getUserType()));
         return new UserDetailsImpl(
-                userAccount.getId(),
-                userAccount.getUserName(),
-                userAccount.getFirstName(),
-                userAccount.getLastName(),
-                userAccount.getPhoneNumber(),
-                userAccount.getUuid(),
-                userAccount.getPassword(),
-                Role.valueOf(userAccount.getUserType()),
+                account.getId(),
+                account.getUserName(),
+                account.getFirstName(),
+                account.getLastName(),
+                account.getPhoneNumber(),
+                account.getUuid(),
+                account.getPassword(),
+                Role.valueOf(account.getUserType()),
                 grantedAuthorities
         );
     }

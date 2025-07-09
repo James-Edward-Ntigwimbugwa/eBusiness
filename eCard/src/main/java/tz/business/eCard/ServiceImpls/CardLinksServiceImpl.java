@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import tz.business.eCard.dtos.CardLinksDto;
 import tz.business.eCard.models.CardLinks;
 import tz.business.eCard.models.Card;
-import tz.business.eCard.models.UserAccount;
+import tz.business.eCard.models.Account;
 import tz.business.eCard.repositories.CardLinksRepository;
 import tz.business.eCard.repositories.CardRepository;
 import tz.business.eCard.services.CardLinksService;
@@ -35,10 +35,10 @@ public class CardLinksServiceImpl implements CardLinksService {
     @Override
     public Response<CardLinks> createLink(CardLinksDto cardsLinkDto) {
         try {
-            UserAccount userAccount = loggedUser.getUserAccount();
+            Account account = loggedUser.getUserAccount();
 
             CardLinks cardLinks = new CardLinks();
-            if (userAccount == null) {
+            if (account == null) {
                 return new Response<>(true, ResponseCode.UNAUTHORIZED, "Unauthorized");
             }
 
@@ -67,7 +67,7 @@ public class CardLinksServiceImpl implements CardLinksService {
             if(!cardsLinkDto.getQrCodeUrl().isBlank() && !Objects.equals(cardsLinkDto.getQrCodeUrl(), cardLinks.getUrl())){
                 cardLinks.setQrCodeUrl(cardsLinkDto.getQrCodeUrl());
             }
-            cardLinks.setUuid(userAccount.getUuid());
+            cardLinks.setUuid(account.getUuid());
 
             CardLinks savedCardLinks = cardLinksRepository.save(cardLinks);
             return new Response<>(false, ResponseCode.SUCCESS, "Card link added successfully",savedCardLinks);

@@ -8,7 +8,7 @@ import tz.business.eCard.dtos.NotificationDTO;
 import tz.business.eCard.models.Card;
 import tz.business.eCard.models.Notification;
 import tz.business.eCard.models.SavedCard;
-import tz.business.eCard.models.UserAccount;
+import tz.business.eCard.models.Account;
 import tz.business.eCard.repositories.CardRepository; // Assuming this exists
 import tz.business.eCard.repositories.NotificationRepository;
 import tz.business.eCard.repositories.SavedCardRepository; // Assuming this exists
@@ -37,8 +37,8 @@ public class NotificationServiceImpl implements NotificationService {
     @Autowired
     private LoggedUser loggedUser;
 
-    public void createCardSavedNotification(UserAccount actor, Card card) {
-        UserAccount cardHolder = card.getUser();
+    public void createCardSavedNotification(Account actor, Card card) {
+        Account cardHolder = card.getUser();
         Notification notification = new Notification(cardHolder, actor, card, "CARD_SAVED");
         Notification savedNotification = notificationRepository.save(notification);
         sendRealTimeNotification(savedNotification);
@@ -69,7 +69,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     public void sendNotificationToSavedUsers(Long cardId, String message) {
         try {
-            UserAccount user = loggedUser.getUserAccount();
+            Account user = loggedUser.getUserAccount();
             log.info("user {}", user);
             Card cards = new Card();
 
@@ -80,10 +80,10 @@ public class NotificationServiceImpl implements NotificationService {
             List<SavedCard> savedCards = savedCardRepository.findByCardId(cardId);
             Card card = cardRepository.findById(cardId)
                     .orElseThrow(() -> new RuntimeException("Card not found"));
-            UserAccount cardHolder = card.getUser();
+            Account cardHolder = card.getUser();
 
             for (SavedCard savedCard : savedCards) {
-                UserAccount recipient = savedCard.getUser();
+                Account recipient = savedCard.getUser();
                 Notification notification = new Notification();
                 notification.setRecipient(recipient);
                 notification.setActor(cardHolder);

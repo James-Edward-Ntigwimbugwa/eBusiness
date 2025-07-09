@@ -1,9 +1,9 @@
 package tz.business.eCard.utils.userExtractor;
-import tz.business.eCard.models.UserAccount;
+import tz.business.eCard.models.Account;
 
 public interface LoggedUser {
 
     UserInfo getInfo() ;
 
-    UserAccount getUserAccount() ;
+    Account getUserAccount() ;
 }

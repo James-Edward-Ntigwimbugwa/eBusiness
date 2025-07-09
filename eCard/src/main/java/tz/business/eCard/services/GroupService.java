@@ -4,7 +4,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import tz.business.eCard.dtos.GroupDto;
 import tz.business.eCard.models.CardGroup;
-import tz.business.eCard.models.UserAccount;
 import tz.business.eCard.utils.Response;
 
 import java.util.List;

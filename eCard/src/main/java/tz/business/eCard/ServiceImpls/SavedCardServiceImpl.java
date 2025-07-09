@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tz.business.eCard.models.Card;
 import tz.business.eCard.models.SavedCard;
-import tz.business.eCard.models.UserAccount;
+import tz.business.eCard.models.Account;
 import tz.business.eCard.repositories.CardRepository;
 import tz.business.eCard.repositories.SavedCardRepository;
-import tz.business.eCard.repositories.UserAccountRepository;
+import tz.business.eCard.repositories.AccountRepository;
 import tz.business.eCard.services.NotificationService;
 import tz.business.eCard.services.SavedCardService;
 import java.util.List;
@@ -23,7 +23,7 @@ public class SavedCardServiceImpl implements SavedCardService {
     private NotificationService notificationService;
 
     @Autowired
-    private UserAccountRepository userRepository;
+    private AccountRepository userRepository;
 
     @Autowired
     private CardRepository cardRepository;
@@ -34,16 +34,16 @@ public class SavedCardServiceImpl implements SavedCardService {
             throw new RuntimeException("Card already saved by this user");
         }
 
-        UserAccount user = userRepository.findById(userId)
+        Account user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new RuntimeException("Card not found"));
 
-        SavedCard savedCard = new SavedCard((UserAccount) user, card);
+        SavedCard savedCard = new SavedCard((Account) user, card);
         SavedCard result = savedCardRepository.save(savedCard);
 
-        notificationService.createCardSavedNotification((UserAccount) user, card);
+        notificationService.createCardSavedNotification((Account) user, card);
 
         return result;
     }

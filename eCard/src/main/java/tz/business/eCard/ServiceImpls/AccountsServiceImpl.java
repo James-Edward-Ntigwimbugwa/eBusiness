@@ -1,5 +1,4 @@
 package tz.business.eCard.ServiceImpls;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,12 +8,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import tz.business.eCard.dtos.AccountDto;
 import tz.business.eCard.dtos.BioDto;
-import tz.business.eCard.dtos.UserAccountDto;
-import tz.business.eCard.models.UserAccount;
-import tz.business.eCard.repositories.UserAccountRepository;
+import tz.business.eCard.models.Account;
+import tz.business.eCard.repositories.AccountRepository;
 import tz.business.eCard.services.FileStorageService;
-import tz.business.eCard.services.UserAccountService;
+import tz.business.eCard.services.AccountService;
 import tz.business.eCard.utils.Response;
 import tz.business.eCard.utils.ResponseCode;
 import tz.business.eCard.utils.UserType;
@@ -30,14 +29,14 @@ import java.util.List;
 import java.util.logging.Logger;
 
 @Service
-public class UserAccountsServiceImpl implements UserAccountService {
-    private Logger log = Logger.getLogger(UserAccountsServiceImpl.class.getName());
+public class AccountsServiceImpl implements AccountService {
+    private Logger log = Logger.getLogger(AccountsServiceImpl.class.getName());
 
     @Autowired
-    private UserAccountRepository userAccountRepository;
+    private AccountRepository accountRepository;
     @Autowired
     private FileStorageService fileStorageService;
-    private UserAccount userAccount;
+    private Account account;
     @Autowired
     private LoggedUser loggedUser;
     @Autowired
@@ -59,17 +58,17 @@ public class UserAccountsServiceImpl implements UserAccountService {
     );
 
     @Override
-    public Response<UserAccount> createUpdateUserAccount(UserAccountDto userAccountDto) {
+    public Response<Account> createUpdateUserAccount(AccountDto accountDto) {
         try {
-            UserAccount user = loggedUser.getUserAccount();
+            Account user = loggedUser.getUserAccount();
 
             if (user == null) {
                 log.warning("UNAUTHORIZED USER CREATING USER");
                 return  new Response<>(true , ResponseCode.UNAUTHORIZED,"Full Authentication required");
             }
 
-            Optional<UserAccount> accountOptional = userAccountRepository.findFirstByUserName(userAccountDto.getUsername());
-            Optional<UserAccount> accountOptional1 = userAccountRepository.findFirstByPhoneNumber(userAccountDto.getPhoneNumber());
+            Optional<Account> accountOptional = accountRepository.findFirstByUserName(accountDto.getUsername());
+            Optional<Account> accountOptional1 = accountRepository.findFirstByPhoneNumber(accountDto.getPhoneNumber());
 
             if (accountOptional.isPresent()) {
                 return  new Response<>(true , ResponseCode.DUPLICATE_KEY , "UserName Already Exists");
@@ -79,79 +78,79 @@ public class UserAccountsServiceImpl implements UserAccountService {
                 return  new Response<>(true , ResponseCode.DUPLICATE_KEY , "PhoneNumber Already Exists");
             }
 
-            if (userAccountDto.getPassword() == null) {
+            if (accountDto.getPassword() == null) {
                 return  new Response<>(true , ResponseCode.NULL_ARGUMENT , "Password must not be null");
             }
 
-            if(userAccountDto.getFirstName() == null) {
+            if(accountDto.getFirstName() == null) {
                 return new Response<>(true , ResponseCode.NULL_ARGUMENT , "FirstName must not be null");
             }
 
-            if(userAccountDto.getLastName() == null) {
+            if(accountDto.getLastName() == null) {
                 return new Response<>(true , ResponseCode.NULL_ARGUMENT , "LastName must not be null");
             }
 
-            if(userAccountDto.getPhoneNumber() == null) {
+            if(accountDto.getPhoneNumber() == null) {
                 return new Response<>(true , ResponseCode.NULL_ARGUMENT , "PhoneNumber must not be null");
             }
 
-            if (userAccountDto.getEmail() == null) {
+            if (accountDto.getEmail() == null) {
                 return new Response<>(true , ResponseCode.NULL_ARGUMENT , "Email must not be null");
             }
 
-            if (userAccountDto.getCompanyTitle() == null) {
+            if (accountDto.getCompanyTitle() == null) {
                 return  new Response<>(true , ResponseCode.NULL_ARGUMENT , "CompanyTitle must not be null");
             }
 
-            if(userAccountDto.getJobTitle() == null) {
+            if(accountDto.getJobTitle() == null) {
                 return  new Response<>(true , ResponseCode.NULL_ARGUMENT , "JobTitle must not be null");
             }
 
-            if(userAccountDto.getMiddleName()==null) {
-                userAccountDto.setMiddleName("");
+            if(accountDto.getMiddleName()==null) {
+                accountDto.setMiddleName("");
             }
 
             else{
-                if(!userAccountDto.getMiddleName().isBlank() && !Objects.equals(userAccountDto.getMiddleName(), userAccountDto.getMiddleName())) {
-                    userAccountDto.setMiddleName(userAccountDto.getMiddleName());
+                if(!accountDto.getMiddleName().isBlank() && !Objects.equals(accountDto.getMiddleName(), accountDto.getMiddleName())) {
+                    accountDto.setMiddleName(accountDto.getMiddleName());
                 }
-                if(!userAccountDto.getLastName().isBlank() && !Objects.equals(userAccountDto.getLastName(), userAccountDto.getLastName())) {
-                    userAccountDto.setLastName(userAccountDto.getLastName());
-                }
-
-                if(!userAccountDto.getFirstName().isBlank() && !Objects.equals(userAccountDto.getFirstName(), userAccountDto.getFirstName())) {
-                    userAccountDto.setFirstName(userAccountDto.getFirstName());
+                if(!accountDto.getLastName().isBlank() && !Objects.equals(accountDto.getLastName(), accountDto.getLastName())) {
+                    accountDto.setLastName(accountDto.getLastName());
                 }
 
-                if(!userAccountDto.getPassword().isBlank() && !Objects.equals(userAccountDto.getPassword(), userAccountDto.getPassword())) {
-                    userAccountDto.setPassword(userAccountDto.getPassword());
+                if(!accountDto.getFirstName().isBlank() && !Objects.equals(accountDto.getFirstName(), accountDto.getFirstName())) {
+                    accountDto.setFirstName(accountDto.getFirstName());
                 }
-                if(!userAccountDto.getJobTitle().isBlank() && !Objects.equals(userAccountDto.getJobTitle(), userAccountDto.getJobTitle())) {
-                    userAccountDto.setJobTitle(userAccountDto.getJobTitle());
-                }
-                if(!userAccountDto.getCompanyTitle().isBlank() && !Objects.equals(userAccountDto.getCompanyTitle(), userAccountDto.getCompanyTitle())) {
-                    userAccountDto.setCompanyTitle(userAccountDto.getCompanyTitle());
-                }
-                if(!userAccountDto.getPhoneNumber().isBlank() && !Objects.equals(userAccountDto.getPhoneNumber(), userAccountDto.getPhoneNumber())) {
-                    userAccountDto.setPhoneNumber(userAccountDto.getPhoneNumber());
-                }
-                if(!userAccountDto.getPassword().isBlank() && !Objects.equals(userAccountDto.getPassword(), userAccountDto.getPassword())) {
-                    userAccountDto.setPassword(passwordEncoder.encode(userAccountDto.getPassword()));
-                }
-                if(userAccountDto.getUserRole() == null){
-                    userAccount.setUserType(String.valueOf(UserType.CUSTOMER));
-                }
-                else if(userAccountDto.getUserRole().equalsIgnoreCase(UserType.ADMIN.name()))
-                    userAccount.setUserType(String.valueOf(UserType.ADMIN));
-                else if (userAccountDto.getUserRole().equalsIgnoreCase(UserType.SUPER_ADMIN.name()))
-                    userAccount.setUserType(String.valueOf(UserType.SUPER_ADMIN));
-                else if (userAccountDto.getUserRole().equalsIgnoreCase(UserType.SELLER.name()))
-                    userAccount.setUserType(String.valueOf(UserType.SELLER));
-                else if(userAccountDto.getUserRole().equalsIgnoreCase(UserType.VENDOR.name()))
-                    userAccount.setUserType(String.valueOf(UserType.VENDOR));
-                else userAccount.setUserType(String.valueOf(UserType.CUSTOMER));
 
-                UserAccount savedUser = userAccountRepository.save(userAccount);
+                if(!accountDto.getPassword().isBlank() && !Objects.equals(accountDto.getPassword(), accountDto.getPassword())) {
+                    accountDto.setPassword(accountDto.getPassword());
+                }
+                if(!accountDto.getJobTitle().isBlank() && !Objects.equals(accountDto.getJobTitle(), accountDto.getJobTitle())) {
+                    accountDto.setJobTitle(accountDto.getJobTitle());
+                }
+                if(!accountDto.getCompanyTitle().isBlank() && !Objects.equals(accountDto.getCompanyTitle(), accountDto.getCompanyTitle())) {
+                    accountDto.setCompanyTitle(accountDto.getCompanyTitle());
+                }
+                if(!accountDto.getPhoneNumber().isBlank() && !Objects.equals(accountDto.getPhoneNumber(), accountDto.getPhoneNumber())) {
+                    accountDto.setPhoneNumber(accountDto.getPhoneNumber());
+                }
+                if(!accountDto.getPassword().isBlank() && !Objects.equals(accountDto.getPassword(), accountDto.getPassword())) {
+                    accountDto.setPassword(passwordEncoder.encode(accountDto.getPassword()));
+                }
+                if(accountDto.getUserRole() == null){
+                    account.setUserType(String.valueOf(UserType.CUSTOMER));
+                }
+                else if(accountDto.getUserRole().equalsIgnoreCase(UserType.ADMIN.name()))
+                    account.setUserType(String.valueOf(UserType.ADMIN));
+                else if (accountDto.getUserRole().equalsIgnoreCase(UserType.SUPER_ADMIN.name()))
+                    account.setUserType(String.valueOf(UserType.SUPER_ADMIN));
+                else if (accountDto.getUserRole().equalsIgnoreCase(UserType.SELLER.name()))
+                    account.setUserType(String.valueOf(UserType.SELLER));
+                else if(accountDto.getUserRole().equalsIgnoreCase(UserType.VENDOR.name()))
+                    account.setUserType(String.valueOf(UserType.VENDOR));
+                else account.setUserType(String.valueOf(UserType.CUSTOMER));
+
+                Account savedUser = accountRepository.save(account);
                 return new Response<>(false,ResponseCode.SUCCESS,savedUser);
             }
         } catch (Exception e){
@@ -162,18 +161,18 @@ public class UserAccountsServiceImpl implements UserAccountService {
     }
 
     @Override
-    public Response<UserAccount> deleteUserAccount(String uuid) {
+    public Response<Account> deleteUserAccount(String uuid) {
 
         try {
-            UserAccount user = loggedUser.getUserAccount();
+            Account user = loggedUser.getUserAccount();
 
             if(user == null) {
                 log.warning("UNAUTHORIZED USER DELETING USER");
                 return  new Response<>(true , ResponseCode.UNAUTHORIZED , "Full Authentication required");
             }
-            Optional<UserAccount> userAccount =userAccountRepository.findFirstByUuid(uuid);
+            Optional<Account> userAccount = accountRepository.findFirstByUuid(uuid);
             if(userAccount.isPresent()) {
-                userAccountRepository.delete(userAccount.get());
+                accountRepository.delete(userAccount.get());
                 return new Response<>(false, ResponseCode.SUCCESS, "User Account Deleted");
             } else {
                 return new Response<>(true, ResponseCode.NOT_FOUND, "No user found with id " + uuid);
@@ -187,9 +186,9 @@ public class UserAccountsServiceImpl implements UserAccountService {
     }
 
     @Override
-    public Response<UserAccount> getUserByUuid(String uuid) {
+    public Response<Account> getUserByUuid(String uuid) {
         try {
-            Optional<UserAccount> userAccount =userAccountRepository.findFirstByUuid(uuid);
+            Optional<Account> userAccount = accountRepository.findFirstByUuid(uuid);
             return userAccount.map(account -> new Response<>(true, ResponseCode.SUCCESS, "User with id " + uuid + " found", account)).orElseGet(() -> new Response<>(true, ResponseCode.NOT_FOUND, "No user found with id " + uuid));
 
         } catch (Exception e){
@@ -199,9 +198,9 @@ public class UserAccountsServiceImpl implements UserAccountService {
     }
 
     @Override
-    public Page<UserAccount> getAllUserAccounts(Pageable pageable) {
+    public Page<Account> getAllUserAccounts(Pageable pageable) {
         try {
-          return userAccountRepository.findALlByDeletedFalse(pageable);
+          return accountRepository.findALlByDeletedFalse(pageable);
 
         }catch (Exception e){
             log.warning(e.getMessage());
@@ -210,9 +209,9 @@ public class UserAccountsServiceImpl implements UserAccountService {
     }
 
     @Override
-    public Page<UserAccount> getOfficials(Pageable pageable) {
+    public Page<Account> getOfficials(Pageable pageable) {
         try{
-            return userAccountRepository.findAllByUserTypeNot(String.valueOf(UserType.CUSTOMER), pageable);
+            return accountRepository.findAllByUserTypeNot(String.valueOf(UserType.CUSTOMER), pageable);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -220,9 +219,9 @@ public class UserAccountsServiceImpl implements UserAccountService {
     }
 
     @Override
-    public Page<UserAccount> getCustomers(Pageable pageable) {
+    public Page<Account> getCustomers(Pageable pageable) {
         try{
-            return userAccountRepository.findAllByUserTypeAndDeletedFalse(String.valueOf(UserType.CUSTOMER), pageable);
+            return accountRepository.findAllByUserTypeAndDeletedFalse(String.valueOf(UserType.CUSTOMER), pageable);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -230,9 +229,9 @@ public class UserAccountsServiceImpl implements UserAccountService {
     }
 
     @Override
-    public Page<UserAccount> getVendors(Pageable pageable) {
+    public Page<Account> getVendors(Pageable pageable) {
         try {
-            return userAccountRepository.findAllByUserTypeAndDeletedFalse(String.valueOf(UserType.VENDOR), pageable);
+            return accountRepository.findAllByUserTypeAndDeletedFalse(String.valueOf(UserType.VENDOR), pageable);
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -240,7 +239,7 @@ public class UserAccountsServiceImpl implements UserAccountService {
     }
 
     @Override
-    public Response<UserAccount> updateBio(BioDto bioDto) {
+    public Response<Account> updateBio(BioDto bioDto) {
         try{
             if(bioDto.getBio() == null){
                 return new Response<>(true , ResponseCode.NULL_ARGUMENT , "Bio is null");
@@ -249,15 +248,15 @@ public class UserAccountsServiceImpl implements UserAccountService {
                 return new Response<>(true , ResponseCode.NULL_ARGUMENT , "User UUID is null");
             }
 
-            Optional<UserAccount>accountOptional = userAccountRepository.findFirstByUuid(bioDto.getUserUuid());
+            Optional<Account>accountOptional = accountRepository.findFirstByUuid(bioDto.getUserUuid());
 
             if(accountOptional.isPresent()) {
                 return new Response<>(true, ResponseCode.ALREADY_EXISTS, "User with "+bioDto.getUserUuid() + " already exists");
             }
-            UserAccount account = accountOptional.get();
+            Account account = accountOptional.get();
             account.setBiography(bioDto.getBio());
             account.setPublishBio(bioDto.isPublishBio());
-            UserAccount savedUser = userAccountRepository.save(account);
+            Account savedUser = accountRepository.save(account);
             return new Response<>(true, ResponseCode.SUCCESS, "User with "+bioDto.getUserUuid() + " updated", savedUser);
 
         }catch (Exception e){
@@ -276,12 +275,12 @@ public class UserAccountsServiceImpl implements UserAccountService {
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "User UUID is required");
             }
 
-            UserAccount user = loggedUser.getUserAccount();
+            Account user = loggedUser.getUserAccount();
             if (user == null) {
                 return new Response<>(true, ResponseCode.UNAUTHORIZED, "Full Authentication required");
             }
 
-            Optional<UserAccount> accountOptional = userAccountRepository.findFirstByUuid(uuid);
+            Optional<Account> accountOptional = accountRepository.findFirstByUuid(uuid);
             if (accountOptional.isEmpty()) {
                 return new Response<>(true, ResponseCode.NOT_FOUND, "No User found with this id");
             }
@@ -294,9 +293,9 @@ public class UserAccountsServiceImpl implements UserAccountService {
             byte[] processedImageBytes = processImage(file);
             String savedFilePath = fileStorageService.saveFile(processedImageBytes , fileName , uploadDir);
 
-            UserAccount userAccount = accountOptional.get();
-            userAccount.setProfilePhoto(file.getOriginalFilename());
-            userAccountRepository.save(userAccount);
+            Account account = accountOptional.get();
+            account.setProfilePhoto(file.getOriginalFilename());
+            accountRepository.save(account);
 
             return new Response<>(false, ResponseCode.SUCCESS, "Profile photo updated successfully");
 

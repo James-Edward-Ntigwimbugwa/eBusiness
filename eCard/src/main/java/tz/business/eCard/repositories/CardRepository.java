@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import tz.business.eCard.models.Card;
-import tz.business.eCard.models.UserAccount;
+import tz.business.eCard.models.Account;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +19,7 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
     void deleteCardsByUuidAndUserUuid(String uuid, String userUuid);
 
-    Optional<Card> findFirstByUserUuidAndDeletedFalse(UserAccount account);
+    Optional<Card> findFirstByUserUuidAndDeletedFalse(Account account);
 
     Page<Card> findAllByOrganizationAndDeletedFalse(String orgUuid, Pageable pageable);
 
@@ -29,12 +29,12 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
     Page<Card> findAllByTitleAndDeletedFalse(String title, Pageable pageable);
 
-    Optional<Card> findFirstByUserUuid(UserAccount userUuid);
+    Optional<Card> findFirstByUserUuid(Account userUuid);
 
     Page<Card> findAllByActiveTrueAndDeletedFalse(Pageable pageable);
 
-    Long countAllByUserUuid(UserAccount userUuid);
-    Long countAllByUserIdAndDeletedFalse(UserAccount userId);
+    Long countAllByUserUuid(Account userUuid);
+    Long countAllByUserIdAndDeletedFalse(Account userId);
 
     Long countAllByDeletedFalse();
 
