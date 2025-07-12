@@ -107,18 +107,19 @@ public class AuthServiceImpl implements AuthService {
                 return  new Response<>(true, ResponseCode.NULL_ARGUMENT, "Company title is required");
             }
 
-            Optional<Account> userAccountOptional = accountRepository.findFirstByPhoneNumber(accountDto.getPhoneNumber());
-            if(userAccountOptional.isPresent()){
+            Optional<Account> phoneNumber = accountRepository.findFirstByPhoneNumber(accountDto.getPhoneNumber());
+            if(phoneNumber.isPresent()){
                 return  new Response<>(true,ResponseCode.DUPLICATE_KEY , "Account with this phone number already exist");
             }
-            Optional<Account> userAccountOptional1 = accountRepository.findFirstByEmail(accountDto.getEmail());
-            if(userAccountOptional1.isPresent()){
+            Optional<Account> email = accountRepository.findFirstByEmail(accountDto.getEmail());
+            if(email.isPresent()){
                 return new Response<>(true, ResponseCode.DUPLICATE_KEY, "Account with this email already exist");
             }
-//        Optional<UserAccount> userAccountOptional2 = userAccountRepository.findFirstByUsername(accountDto.getFirstName() + " " + accountDto.getMiddleName() + " " + accountDto.getLastName());
-//        if(userAccountOptional2.isPresent()){
-//            return new Response<>(true, ResponseCode.DUPLICATE_KEY, "Account with username already exist");
-//        }
+
+            Optional<Account> username = accountRepository.findFirstByUserName(accountDto.getUsername());
+            if (username.isPresent()){
+                return new Response<>(true, ResponseCode.DUPLICATE_KEY, "Account with this username already exist");
+            }
 
             Account account = new Account();
             Random rand = new SecureRandom();

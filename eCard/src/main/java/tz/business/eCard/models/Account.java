@@ -20,7 +20,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "user_account", indexes = @Index(name = "idx_lastname_firstname" , columnList = "lastName , firstName"))
+@Table(name = "account", indexes = @Index(name = "idx_lastname_firstname" , columnList = "lastName , firstName"))
 @SQLDelete(sql = "UPDATE user_account SET deleted = true WHERE id=?" , check = ResultCheckStyle.COUNT)
 @Where(clause = "deleted = false")
 public class Account extends BaseEntity{
@@ -37,7 +37,7 @@ public class Account extends BaseEntity{
     @Column(name = "full_name" , nullable = false)
     private String fullName ;
 
-    @Column(name="username" , nullable = false)
+    @Column(name="username" , nullable = false, unique = true)
     private String userName;
 
     @Column(name = "company_name" , nullable = false)

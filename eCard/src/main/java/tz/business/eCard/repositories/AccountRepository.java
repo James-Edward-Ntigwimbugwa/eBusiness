@@ -4,6 +4,8 @@ import jakarta.validation.constraints.Pattern;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import tz.business.eCard.models.Account;
 
@@ -23,6 +25,15 @@ public interface AccountRepository extends JpaRepository<Account,Long> {
     Page<Account> findAllByUserTypeAndDeletedFalse(String userType, Pageable pageable);
     Long countAllByActiveTrue();
 
-    Optional<Account> findFirstByUserName(String username);
+    Optional<Account> findFirstByUserName(String userName);
+
+    // Case-insensitive username search
+    @Query("SELECT a FROM Account a WHERE LOWER(a.userName) = LOWER(:userName) AND a.deleted = false")
+    Optional<Account> findByUserNameIgnoreCase(@Param("userName") String userName);
+
+    // Case-insensitive phone number search
+    @Query("SELECT a FROM Account a WHERE a.phoneNumber = :phoneNumber AND a.deleted = false")
+    Optional<Account> findByPhoneNumberAndNotDeleted(@Param("phoneNumber") String phoneNumber);
+
     Optional<Account> findFirstByEmailAndDeletedFalse(String email);
 }

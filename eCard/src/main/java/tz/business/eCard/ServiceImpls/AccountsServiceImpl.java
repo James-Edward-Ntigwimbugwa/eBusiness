@@ -24,6 +24,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.List;
 import java.util.logging.Logger;
@@ -64,100 +65,84 @@ public class AccountsServiceImpl implements AccountService {
 
             if (user == null) {
                 log.warning("UNAUTHORIZED USER CREATING USER");
-                return  new Response<>(true , ResponseCode.UNAUTHORIZED,"Full Authentication required");
+                return new Response<>(true, ResponseCode.UNAUTHORIZED, "Full Authentication required");
             }
 
-            Optional<Account> accountOptional = accountRepository.findFirstByUserName(accountDto.getUsername());
+            Optional<Account> username = accountRepository.findFirstByUserName(accountDto.getUsername());
+            if (username.isPresent()) {
+                log.info("======If statement to check username executed ======");
+                return new Response<>(true, ResponseCode.DUPLICATE_KEY, "UserName Already Exists");
+            }
+
             Optional<Account> accountOptional1 = accountRepository.findFirstByPhoneNumber(accountDto.getPhoneNumber());
-
-            if (accountOptional.isPresent()) {
-                return  new Response<>(true , ResponseCode.DUPLICATE_KEY , "UserName Already Exists");
-            }
-
             if (accountOptional1.isPresent()) {
-                return  new Response<>(true , ResponseCode.DUPLICATE_KEY , "PhoneNumber Already Exists");
+                return new Response<>(true, ResponseCode.DUPLICATE_KEY, "PhoneNumber Already Exists");
             }
 
             if (accountDto.getPassword() == null) {
-                return  new Response<>(true , ResponseCode.NULL_ARGUMENT , "Password must not be null");
+                return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Password must not be null");
             }
-
-            if(accountDto.getFirstName() == null) {
-                return new Response<>(true , ResponseCode.NULL_ARGUMENT , "FirstName must not be null");
+            if (accountDto.getFirstName() == null) {
+                return new Response<>(true, ResponseCode.NULL_ARGUMENT, "FirstName must not be null");
             }
-
-            if(accountDto.getLastName() == null) {
-                return new Response<>(true , ResponseCode.NULL_ARGUMENT , "LastName must not be null");
+            if (accountDto.getLastName() == null) {
+                return new Response<>(true, ResponseCode.NULL_ARGUMENT, "LastName must not be null");
             }
-
-            if(accountDto.getPhoneNumber() == null) {
-                return new Response<>(true , ResponseCode.NULL_ARGUMENT , "PhoneNumber must not be null");
+            if (accountDto.getPhoneNumber() == null) {
+                return new Response<>(true, ResponseCode.NULL_ARGUMENT, "PhoneNumber must not be null");
             }
-
             if (accountDto.getEmail() == null) {
-                return new Response<>(true , ResponseCode.NULL_ARGUMENT , "Email must not be null");
+                return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Email must not be null");
             }
-
             if (accountDto.getCompanyTitle() == null) {
-                return  new Response<>(true , ResponseCode.NULL_ARGUMENT , "CompanyTitle must not be null");
+                return new Response<>(true, ResponseCode.NULL_ARGUMENT, "CompanyTitle must not be null");
+            }
+            if (accountDto.getJobTitle() == null) {
+                return new Response<>(true, ResponseCode.NULL_ARGUMENT, "JobTitle must not be null");
             }
 
-            if(accountDto.getJobTitle() == null) {
-                return  new Response<>(true , ResponseCode.NULL_ARGUMENT , "JobTitle must not be null");
+            // Create new account
+            Account newAccount = new Account();
+
+            // Set basic information
+            newAccount.setUserName(accountDto.getUsername());
+            newAccount.setFirstName(accountDto.getFirstName());
+            newAccount.setLastName(accountDto.getLastName());
+            newAccount.setPhoneNumber(accountDto.getPhoneNumber());
+            newAccount.setEmail(accountDto.getEmail());
+            newAccount.setCompanyName(accountDto.getCompanyTitle());
+            newAccount.setJobTitle(accountDto.getJobTitle());
+            newAccount.setPassword(passwordEncoder.encode(accountDto.getPassword()));
+
+            // Set user role
+            if (accountDto.getUserRole() == null) {
+                newAccount.setUserType(String.valueOf(UserType.CUSTOMER));
+            } else if (accountDto.getUserRole().equalsIgnoreCase(UserType.ADMIN.name())) {
+                newAccount.setUserType(String.valueOf(UserType.ADMIN));
+            } else if (accountDto.getUserRole().equalsIgnoreCase(UserType.SUPER_ADMIN.name())) {
+                newAccount.setUserType(String.valueOf(UserType.SUPER_ADMIN));
+            } else if (accountDto.getUserRole().equalsIgnoreCase(UserType.SELLER.name())) {
+                newAccount.setUserType(String.valueOf(UserType.SELLER));
+            } else if (accountDto.getUserRole().equalsIgnoreCase(UserType.VENDOR.name())) {
+                newAccount.setUserType(String.valueOf(UserType.VENDOR));
+            } else {
+                newAccount.setUserType(String.valueOf(UserType.CUSTOMER));
             }
 
-            if(accountDto.getMiddleName()==null) {
-                accountDto.setMiddleName("");
-            }
+            // Set other default values (adjust as needed based on your Account entity)
+            newAccount.setUuid(UUID.randomUUID().toString());
+            newAccount.setDeleted(false);
+            newAccount.setCreatedAt(LocalDateTime.now());
 
-            else{
-                if(!accountDto.getMiddleName().isBlank() && !Objects.equals(accountDto.getMiddleName(), accountDto.getMiddleName())) {
-                    accountDto.setMiddleName(accountDto.getMiddleName());
-                }
-                if(!accountDto.getLastName().isBlank() && !Objects.equals(accountDto.getLastName(), accountDto.getLastName())) {
-                    accountDto.setLastName(accountDto.getLastName());
-                }
+            // Save the account
+            Account savedUser = accountRepository.save(newAccount);
+            return new Response<>(false, ResponseCode.SUCCESS, "Account created successfully", savedUser);
 
-                if(!accountDto.getFirstName().isBlank() && !Objects.equals(accountDto.getFirstName(), accountDto.getFirstName())) {
-                    accountDto.setFirstName(accountDto.getFirstName());
-                }
-
-                if(!accountDto.getPassword().isBlank() && !Objects.equals(accountDto.getPassword(), accountDto.getPassword())) {
-                    accountDto.setPassword(accountDto.getPassword());
-                }
-                if(!accountDto.getJobTitle().isBlank() && !Objects.equals(accountDto.getJobTitle(), accountDto.getJobTitle())) {
-                    accountDto.setJobTitle(accountDto.getJobTitle());
-                }
-                if(!accountDto.getCompanyTitle().isBlank() && !Objects.equals(accountDto.getCompanyTitle(), accountDto.getCompanyTitle())) {
-                    accountDto.setCompanyTitle(accountDto.getCompanyTitle());
-                }
-                if(!accountDto.getPhoneNumber().isBlank() && !Objects.equals(accountDto.getPhoneNumber(), accountDto.getPhoneNumber())) {
-                    accountDto.setPhoneNumber(accountDto.getPhoneNumber());
-                }
-                if(!accountDto.getPassword().isBlank() && !Objects.equals(accountDto.getPassword(), accountDto.getPassword())) {
-                    accountDto.setPassword(passwordEncoder.encode(accountDto.getPassword()));
-                }
-                if(accountDto.getUserRole() == null){
-                    account.setUserType(String.valueOf(UserType.CUSTOMER));
-                }
-                else if(accountDto.getUserRole().equalsIgnoreCase(UserType.ADMIN.name()))
-                    account.setUserType(String.valueOf(UserType.ADMIN));
-                else if (accountDto.getUserRole().equalsIgnoreCase(UserType.SUPER_ADMIN.name()))
-                    account.setUserType(String.valueOf(UserType.SUPER_ADMIN));
-                else if (accountDto.getUserRole().equalsIgnoreCase(UserType.SELLER.name()))
-                    account.setUserType(String.valueOf(UserType.SELLER));
-                else if(accountDto.getUserRole().equalsIgnoreCase(UserType.VENDOR.name()))
-                    account.setUserType(String.valueOf(UserType.VENDOR));
-                else account.setUserType(String.valueOf(UserType.CUSTOMER));
-
-                Account savedUser = accountRepository.save(account);
-                return new Response<>(false,ResponseCode.SUCCESS,savedUser);
-            }
-        } catch (Exception e){
-            log.warning(e.getMessage());
+        } catch (Exception e) {
+            log.warning("Error creating account: " + e.getMessage());
+            e.printStackTrace();
+            return new Response<>(true, ResponseCode.INTERNAL_SERVER_ERROR, "Failed to create account");
         }
-
-        return new Response<>(false , ResponseCode.UNAUTHORIZED , "Unauthorized");
     }
 
     @Override
