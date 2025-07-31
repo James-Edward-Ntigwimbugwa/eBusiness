@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2025-07-12T14:10:00.000Z" agent="5.0 (Windows)" etag="class1234" version="20.2.7" type="device">
+  <diagram id="class1" name="Class Diagram">
+    <mxGraphModel dx="1000" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <!-- User -->
+        <mxCell id="class_user" value="&lt;&lt;abstract&gt;&gt; User&lt;hr&gt;- userID: UUID&lt;br&gt;- fullName: String&lt;br&gt;- email: String&lt;br&gt;- passwordHash: String&lt;br&gt;- phoneNumber: String&lt;br&gt;- roles: Set&lt;Role&gt;&lt;hr&gt;+ register(): void&lt;br&gt;+ login(): JWT&lt;br&gt;+ updateProfile(): void&lt;br&gt;+ logout(): void" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#000000;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="50" width="220" height="200" as="geometry"/>
+        </mxCell>
+        <!-- BusinessOwner -->
+        <mxCell id="class_owner" value="BusinessOwner&lt;hr&gt;+ businessName: String&lt;br&gt;+ profilePhotoUrl: String&lt;br&gt;+ bio: String&lt;hr&gt;+ createCard(data): Card&lt;br&gt;+ updateCard(id, data): void&lt;br&gt;+ deleteCard(id): void&lt;br&gt;+ manageLinks(): void&lt;br&gt;+ createGroup(name): CardGroup&lt;br&gt;+ viewAnalytics(): AnalyticsData" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#000000;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="350" y="50" width="240" height="220" as="geometry"/>
+        </mxCell>
+        <!-- Customer -->
+        <mxCell id="class_customer" value="Customer&lt;hr&gt;+ searchCards(criteria): List&lt;Card&gt;&lt;br&gt;+ viewCard(id): Card&lt;br&gt;+ saveCard(id): void&lt;br&gt;+ shareCard(id, channel): void" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#000000;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="300" width="220" height="160" as="geometry"/>
+        </mxCell>
+        <!-- Admin -->
+        <mxCell id="class_admin" value="Admin&lt;hr&gt;+ manageUsers(): void&lt;br&gt;+ manageNotifications(): void&lt;br&gt;+ configureSystem(): void" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#000000;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="350" y="300" width="240" height="140" as="geometry"/>
+        </mxCell>
+        <!-- Card -->
+        <mxCell id="class_card" value="Card&lt;hr&gt;- cardID: UUID&lt;br&gt;- ownerID: UUID&lt;br&gt;- title: String&lt;br&gt;- description: String&lt;br&gt;- profilePhotoUrl: String&lt;br&gt;- published: Boolean&lt;br&gt;- createdAt: Timestamp&lt;br&gt;- updatedAt: Timestamp&lt;hr&gt;+ publish(): void&lt;br&gt;+ unpublish(): void&lt;br&gt;+ addLink(): Link&lt;br&gt;+ removeLink(id): void" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#000000;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="650" y="50" width="260" height="260" as="geometry"/>
+        </mxCell>
+        <!-- Link -->
+        <mxCell id="class_link" value="Link&lt;hr&gt;- linkID: UUID&lt;br&gt;- cardID: UUID&lt;br&gt;- url: String&lt;br&gt;- title: String&lt;hr&gt;+ click(): void&lt;br&gt;+ trackClick(): AnalyticsData" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fdebd0;strokeColor=#000000;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="650" y="350" width="260" height="160" as="geometry"/>
+        </mxCell>
+        <!-- Inheritance -->
+        <mxCell id="inh1" edge="1" parent="1" source="class_owner" target="class_user" style="edgeStyle=elbowEdgeStyle;html=1;endArrow=block;strokeWidth=2;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="inh2" edge="1" parent="1" source="class_customer" target="class_user" style="edgeStyle=elbowEdgeStyle;html=1;endArrow=block;strokeWidth=2;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="inh3" edge="1" parent="1" source="class_admin" target="class_user" style="edgeStyle=elbowEdgeStyle;html=1;endArrow=block;strokeWidth=2;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- Associations -->
+        <mxCell id="assoc1" edge="1" parent="1" source="class_owner" target="class_card" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=none;strokeWidth=2;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="assoc2" edge="1" parent="1" source="class_card" target="class_link" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=none;strokeWidth=2;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="assoc3" edge="1" parent="1" source="class_customer" target="class_card" style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;endArrow=none;strokeWidth=2;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

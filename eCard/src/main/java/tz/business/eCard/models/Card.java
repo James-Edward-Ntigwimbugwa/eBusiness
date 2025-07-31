@@ -28,7 +28,7 @@ public class Card extends BaseEntity {
     @Column(name = "organization" , nullable = false)
     private String organization;
 
-    @Column(name = "publishCard")
+    @Column(name = "publish_card")
     private boolean publishCard ;
 
     @Column(name = "card_logo")
@@ -58,7 +58,7 @@ public class Card extends BaseEntity {
     @Column(name="email")
     private String email;
 
-    @Column(name = "linkedIn")
+    @Column(name = "linked_in")
     private String linkedIn;
 
     @Column(name = "website_url")

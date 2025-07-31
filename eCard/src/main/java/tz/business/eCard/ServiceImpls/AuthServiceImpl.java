@@ -9,7 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import tz.business.eCard.dtos.*;
-import tz.business.eCard.jwt.JWTutils;
+import tz.business.eCard.security.JWTutils;
 import tz.business.eCard.models.Account;
 import tz.business.eCard.repositories.AccountRepository;
 import tz.business.eCard.services.AuthService;

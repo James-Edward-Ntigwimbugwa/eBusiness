@@ -1,6 +1,6 @@
 package tz.business.eCard.config;
 
-import tz.business.eCard.jwt.AuthTokenFilter;
+import tz.business.eCard.security.AuthTokenFilter;
 import tz.business.eCard.userDetailService.UserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

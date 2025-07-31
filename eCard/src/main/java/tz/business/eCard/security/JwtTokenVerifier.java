@@ -1,4 +1,4 @@
-package tz.business.eCard.jwt;
+package tz.business.eCard.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

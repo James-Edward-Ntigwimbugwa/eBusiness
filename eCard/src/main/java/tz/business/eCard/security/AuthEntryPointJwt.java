@@ -1,10 +1,11 @@
-package tz.business.eCard.jwt;
+package tz.business.eCard.security;
 
 import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -28,18 +29,10 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
         response.getOutputStream().println(json);
     }
 
+    @Setter
     @Getter
     static class AuthError{
         private String errors;
         private int code;
-
-        public void setErrors(String errors) {
-            this.errors = errors;
-        }
-
-        public void setCode(int code) {
-            this.code = code;
-        }
-
     }
 }

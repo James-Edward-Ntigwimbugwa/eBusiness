@@ -1,9 +1,11 @@
-package tz.business.eCard.jwt;
+package tz.business.eCard.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotNull;
+import lombok.NonNull;
 import org.springframework.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +26,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailServiceImpl userDetailServiceImpl;
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,@NonNull FilterChain filterChain) throws ServletException, IOException {
         try {
             String jwt = parseJwt(request);
             if (jwt != null && jwtutils.validateJwtToken(jwt)) {
@@ -43,7 +45,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     @Override
     public boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-
         return request.getServletPath().startsWith("/auth/**")
                 || request.getServletPath().startsWith("/gui/**")
                 || request.getServletPath().startsWith("/swagger-ui/**")

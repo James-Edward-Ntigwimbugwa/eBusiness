@@ -71,16 +71,22 @@ public class NotificationServiceImpl implements NotificationService {
         try {
             Account user = loggedUser.getUserAccount();
             log.info("user {}", user);
-            Card cards = new Card();
 
+            // Fix: Add proper authorization check
             if (user == null) {
-                log.info("Unauthorized ======>");
+                log.error("Unauthorized access attempt");
+                throw new RuntimeException("Unauthorized");
             }
 
             List<SavedCard> savedCards = savedCardRepository.findByCardId(cardId);
             Card card = cardRepository.findById(cardId)
                     .orElseThrow(() -> new RuntimeException("Card not found"));
             Account cardHolder = card.getUser();
+
+            // Fix: Add validation for empty message
+            if (message == null || message.trim().isEmpty()) {
+                throw new RuntimeException("Message cannot be empty");
+            }
 
             for (SavedCard savedCard : savedCards) {
                 Account recipient = savedCard.getUser();
@@ -96,8 +102,9 @@ public class NotificationServiceImpl implements NotificationService {
                 notificationRepository.save(notification);
                 sendRealTimeNotification(notification);
             }
-        }catch (Exception e){
-
+        } catch (Exception e) {
+            log.error("Error sending notification: {}", e.getMessage(), e);
+            throw new RuntimeException("Failed to send notification: " + e.getMessage());
         }
     }
 

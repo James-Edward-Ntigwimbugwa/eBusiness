@@ -1,4 +1,4 @@
-package tz.business.eCard.jwt;
+package tz.business.eCard.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

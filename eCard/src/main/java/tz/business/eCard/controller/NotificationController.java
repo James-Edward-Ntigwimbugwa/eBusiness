@@ -1,5 +1,8 @@
 package tz.business.eCard.controller;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tz.business.eCard.models.Notification;
@@ -8,6 +11,7 @@ import tz.business.eCard.services.NotificationService;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/notifications")
 public class NotificationController {
@@ -41,11 +45,31 @@ public class NotificationController {
         return ResponseEntity.noContent().build();
     }
 
+
     @PostMapping("/send-notifications/{cardId}")
-    public ResponseEntity<Void> sendNotifications(
+    public ResponseEntity<?> sendNotifications(
             @PathVariable Long cardId,
             @RequestBody String message) {
-        notificationService.sendNotificationToSavedUsers(cardId, message);
-        return ResponseEntity.noContent().build();
+        try {
+            // Fix: Add input validation
+            if (cardId == null || cardId <= 0) {
+                return ResponseEntity.badRequest().body("Invalid card ID");
+            }
+
+            if (message == null || message.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("Message cannot be empty");
+            }
+
+            notificationService.sendNotificationToSavedUsers(cardId, message);
+            return ResponseEntity.ok().body("Notification sent successfully");
+        } catch (RuntimeException e) {
+            log.error("Error in sendNotifications endpoint: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to send notification: " + e.getMessage());
+        } catch (Exception e) {
+            log.error("Unexpected error in sendNotifications endpoint: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An unexpected error occurred");
+        }
     }
 }
